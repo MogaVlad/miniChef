@@ -1,0 +1,5 @@
+Colors :
+
+orange     : #f15a29
+gray       : #e6e7e8
+font color : #414042
