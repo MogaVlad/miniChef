@@ -19,9 +19,9 @@ export default function NavBar() {
         <section className='flex justify-between mx-auto container items-center px-6'>
             <Image src={logo} alt='logo image' className='w-32 h-auto'></Image>
             <section className='justify-between flex gap-8 items-center'>
-                { pathname != '/' && ( <Link href='/'> Home </Link> )}
-                <Link href='#' className='hover:text-main'> Enter the Community </Link>
-                <Link href='/contact' className='hover:text-main'> Contact </Link>
+                { pathname != '/' && ( <Link href='/' className='hover:text-main'> Home </Link> )}
+                <Link href='/community' className='hover:text-main'> Enter the Community </Link>
+                <Link href='/help' className='hover:text-main'> Help & Support </Link>
                 <section className='flex gap-3 items-center'>
                     <Link href='https://www.facebook.com/'>
                         <Image className='w-8 h-8' src={facebook} alt='logo facebook'></Image>

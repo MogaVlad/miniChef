@@ -11,11 +11,9 @@ export default function Footer() {
             <section className='flex justify-between items-center'>
                 <Image src={logo} alt='logo image' className='w-32 h-auto'></Image>
                 <section className='flex justify-between items-center gap-6'>
-                    <Link href='#'         className='hover:text-main'>About Us</Link>
-                    <Link href='/contact'  className='hover:text-main'>Contact</Link>
-                    <Link href='#'         className='hover:text-main'>FAQ</Link>
-                    <Link href='#'         className='hover:text-main'>Legal disclosure</Link>
-                    <Link href='#'         className='hover:text-main'>Privacy policy</Link>
+                    <Link href='/about'  className='hover:text-main'>About Us</Link>
+                    <Link href='/help'   className='hover:text-main'>Help & Support</Link>
+                    <Link href='/terms'  className='hover:text-main'>Terms & Privacy</Link>
                 </section>
             </section> 
             <p className='text-center'> Copyright © youChef. All rights reserved</p>      
