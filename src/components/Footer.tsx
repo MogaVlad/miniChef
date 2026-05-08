@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className='w-full bg-white'>
         <section className='container mx-auto p-4 px-6'>
             <section className='flex justify-between items-center'>
-                <Image src={logo} alt='logo image'></Image>
+                <Image src={logo} alt='logo image' className='w-32 h-auto'></Image>
                 <section className='flex justify-between items-center gap-6'>
                     <Link href='#'         className='hover:text-main'>About Us</Link>
                     <Link href='/contact'  className='hover:text-main'>Contact</Link>
@@ -18,7 +18,7 @@ export default function Footer() {
                     <Link href='#'         className='hover:text-main'>Privacy policy</Link>
                 </section>
             </section> 
-            <p className='text-center'> Copyright © 2023 youChef. All rights reserved</p>      
+            <p className='text-center'> Copyright © youChef. All rights reserved</p>      
         </section>
     </footer>
   )
