@@ -7,15 +7,15 @@ import logo from '../assets/logo.png'
 export default function Footer() {
   return (
     <footer className='w-full bg-white'>
-        <section className='container mx-auto p-4'>
+        <section className='container mx-auto p-4 px-6'>
             <section className='flex justify-between items-center'>
                 <Image src={logo} alt='logo image'></Image>
-                <section className='flex justify-between items-center gap-4 mr-32'>
-                    <Link href='#'>About Us</Link>
-                    <Link href='/contact'>Contact</Link>
-                    <Link href='#'>FAQ</Link>
-                    <Link href='#'>Legal disclosure</Link>
-                    <Link href='#'>Privacy policy</Link>
+                <section className='flex justify-between items-center gap-6'>
+                    <Link href='#'         className='hover:text-main'>About Us</Link>
+                    <Link href='/contact'  className='hover:text-main'>Contact</Link>
+                    <Link href='#'         className='hover:text-main'>FAQ</Link>
+                    <Link href='#'         className='hover:text-main'>Legal disclosure</Link>
+                    <Link href='#'         className='hover:text-main'>Privacy policy</Link>
                 </section>
             </section> 
             <p className='text-center'> Copyright © 2023 youChef. All rights reserved</p>      
