@@ -67,9 +67,11 @@ async function fetchData(){
   },[data])
 
 return (
-  <main className='pt-[92.25px] bg-gray-200 text-black'>
+  <main className='bg-gray-200 text-black'>
     <div className='container mx-auto flex flex-col items-center p-4 py-12 min-h-[calc(100vh-92.24px-148.94px)]'>
-      <h1 className='w-full text-center pb-8 text-4xl font-semibold'>Found recipes in {category}</h1>
+      <h1 className='w-full text-center mb-8 pb-8 text-4xl font-semibold'>
+        {category ? category.charAt(0).toUpperCase() + category.slice(1) : ''} recipes for you
+      </h1>
       {isLoading && <img className='w-40 h-40 self-center' src={"https://media.tenor.com/wpSo-8CrXqUAAAAi/loading-loading-forever.gif"} alt='loading gif' width={300} height={300}/>}
       {err && <div className='flex gap-4 p-6 bg-white shadow-md w-full'>
         <div className='flex flex-col gap-3 w-full items-center text-center py-4'>

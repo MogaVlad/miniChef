@@ -20,3 +20,35 @@ body {
   color: rgb(var(--foreground-rgb));
   background: #ffffff;
 }
+
+/* Header — rotating placeholder */
+.ph-rotator {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: #9ca3af;
+}
+.ph-rotator span {
+  position: absolute;
+  left: 20px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.ph-rotator span.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Header — quick-add chips */
+.chip {
+  transition: all 0.18s ease;
+}
+.chip:hover {
+  background: #fff;
+  color: #EC5B26;
+  border-color: #EC5B26;
+  transform: translateY(-1px);
+}
