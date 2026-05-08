@@ -2,7 +2,7 @@
 
 import EnterTheCommunity from "@/components/EnterTheCommunity";
 import Header from "@/components/Header";
-import LatestRecipes from "@/components/LatestRecipes";
+import PopularRecipes from "@/components/PopularRecipes";
 import Modal from "@/components/Modal";
 import { IngredientsContextProvider } from "@/context/IngredientsContext";
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
     <IngredientsContextProvider>
       <main className="">
         <Header/>
-        <LatestRecipes/>
+        <PopularRecipes/>
         <EnterTheCommunity/>
         <Modal/>
       </main>
