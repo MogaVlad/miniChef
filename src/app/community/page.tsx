@@ -1,9 +1,9 @@
 import React from 'react'
 import Image from 'next/image'
 
-import community_1 from '../../assets/community_1.png'
-import community_2 from '../../assets/community_2.png'
-import community_3 from '../../assets/community_3.png'
+import community_1 from '../../assets/community/community_1.png'
+import community_2 from '../../assets/community/community_2.png'
+import community_3 from '../../assets/community/community_3.png'
 
 import category_breakfast from '../../assets/category_images/category_breakfast.jpg'
 import category_soups from '../../assets/category_images/category_soups.jpg'

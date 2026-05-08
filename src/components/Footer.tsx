@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className='w-full bg-white'>
         <section className='container mx-auto p-4 px-6'>
             <section className='flex justify-between items-center'>
-                <Image src={logo} alt='logo image' className='w-32 h-auto'></Image>
+                <Image src={logo} alt='logo image' className='h-12 w-auto'></Image>
                 <section className='flex justify-between items-center gap-6'>
                     <Link href='/about'  className='hover:text-main'>About Us</Link>
                     <Link href='/help'   className='hover:text-main'>Help & Support</Link>

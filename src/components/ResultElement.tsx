@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { useSavedRecipes } from '@/context/SavedRecipesContext'
+import categoryImages from '@/assets/categoryImages'
 
 export default function ResultElement({title, prepTime, ingredients, prepDetails, category}:any) {
 
@@ -41,7 +42,7 @@ export default function ResultElement({title, prepTime, ingredients, prepDetails
 
   return (
     <div className={`flex gap-4 p-4 bg-white shadow-md ${openDivClasses.divClass}`}>
-        <Image className='w-[200px] h-[200px] aspect-square object-cover' src={`/category_images/category_${category}.jpg`} alt='img recipe' width={300} height={300}/>
+        <Image className='w-[200px] h-[200px] aspect-square object-cover' src={categoryImages[category]} alt='img recipe' width={300} height={300}/>
         <div className='flex flex-col gap-4 w-full p-4'>
             <h2 className='text-3xl font-semibold'>{title}</h2>
             <p className='text-xl font-semibold'>Preparation time: {prepTime}</p>

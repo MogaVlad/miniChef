@@ -2,6 +2,8 @@
 
 import { useIngredientsContext } from "@/context/IngredientsContext";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import banner from "../assets/banner.jpg";
 
 const PROMPTS = [
   'Try: chicken, rice, lemon',
@@ -46,7 +48,7 @@ export default function Header() {
   return (
     <header className='relative h-[calc(100vh-92.25px)] overflow-hidden'>
       {/* Background photo */}
-      <div className='absolute inset-0 bg-header bg-cover bg-center' />
+      <Image src={banner} alt='banner' fill className='object-cover' priority />
 
       {/* Left-to-right dark gradient */}
       <div

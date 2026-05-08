@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSavedRecipes, SavedRecipe } from '@/context/SavedRecipesContext'
+import categoryImages from '@/assets/categoryImages'
 
 function SavedCard({ recipe, onRemove }: { recipe: SavedRecipe; onRemove: () => void }) {
   const [open, setOpen] = useState(false)
@@ -16,7 +17,7 @@ function SavedCard({ recipe, onRemove }: { recipe: SavedRecipe; onRemove: () => 
     <div className={`flex gap-4 p-4 bg-white shadow-md ${cardBorder}`}>
       <Image
         className='w-[200px] h-[200px] aspect-square object-cover'
-        src={`/category_images/category_${recipe.category}.jpg`}
+        src={categoryImages[recipe.category]}
         alt={recipe.name}
         width={300}
         height={300}

@@ -18,7 +18,7 @@ export default function ResulsPage() {
 async function fetchData(){
     setIsLoading(true);
       try{
-          const response = await fetch(`/api/openai?ingredients=${ingredients}&selectedCategory=${category}`, {
+          const response = await fetch(`/api/generate-recipes?ingredients=${ingredients}&selectedCategory=${category}`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json'

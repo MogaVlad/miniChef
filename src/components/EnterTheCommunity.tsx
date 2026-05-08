@@ -1,9 +1,9 @@
 import React from 'react'
 import CommunityElement from '../components/CommunityElement'
 
-import community_1 from '../assets/community_1.png'
-import community_2 from '../assets/community_2.png'
-import community_3 from '../assets/community_3.png'
+import community_1 from '../assets/community/community_1.png'
+import community_2 from '../assets/community/community_2.png'
+import community_3 from '../assets/community/community_3.png'
 
 export default function EnterTheCommunity() {
   return (

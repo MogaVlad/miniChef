@@ -18,7 +18,6 @@ export default function Modal() {
 
     const [modalClass, setModalClass] = useState('hidden')
     const [selectedVal, setSelectedVal] = useState('')
-    const imagesPath = '/category_images/category_'
     const { ingredients, modalOpen, setModalOpen }:any = useIngredientsContext()
 
     useEffect(()=> {

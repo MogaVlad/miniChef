@@ -13,9 +13,7 @@ const config: Config = {
         'main': '#EC5B26'
       },
     
-      backgroundImage: {
-        'header': 'url(/banner.jpg)',
-      },
+      backgroundImage: {},
     },
   },
   plugins: [],
