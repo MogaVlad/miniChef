@@ -1,16 +1,17 @@
 'use client'
  
 import ResultElement from '@/components/ResultElement'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 export default function ResulsPage() {
 
-    const [data, setData] = useState({data: []});
+    const [data, setData] = useState<any>({});
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState('')
     const [finalContent, setFinalContent] = useState([])
 
+    const router = useRouter()
     const searchParams = useSearchParams()
     const category = searchParams?.get('selectedCategory')
     const ingredients = searchParams?.get('ingredients')
@@ -18,7 +19,7 @@ export default function ResulsPage() {
 async function fetchData(){
     setIsLoading(true);
       try{
-          const response = await fetch(`/api/openai?ingredients=${ingredients}?selectedCategory=${category}`, {
+          const response = await fetch(`/api/openai?ingredients=${ingredients}&selectedCategory=${category}`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json'
@@ -45,24 +46,43 @@ async function fetchData(){
     var content:any = []
 
     if(data.text && typeof(data.text) != 'undefined'){
+      try {
+        let parsed = JSON.parse(data.text);
 
-      let arr = JSON.parse(data.text);
+        if(parsed.error){
+          setErr(parsed.error);
+          return;
+        }
 
-      for(let i = 0; i< arr.length; i++){
-        content.push(<ResultElement key={i} title={arr[i].name} prepTime={arr[i].duration} ingredients={arr[i].ingredients} prepDetails={arr[i].preparation} category={category}/>)
+        let arr = Array.isArray(parsed) ? parsed : [];
+        for(let i = 0; i< arr.length; i++){
+          content.push(<ResultElement key={i} title={arr[i].name} prepTime={arr[i].duration} ingredients={arr[i].ingredients} prepDetails={arr[i].preparation} category={category}/>)
+        }
+        setFinalContent(content)
+      } catch (e: any) {
+        setErr('Failed to parse recipes: ' + e.message)
       }
-      setFinalContent(content)
     }
-    console.log(data.text)
 
   },[data])
 
 return (
-  <main className='pt-[92.25px] bg-gray-200'>
+  <main className='pt-[92.25px] bg-gray-200 text-black'>
     <div className='container mx-auto flex flex-col items-center p-4 py-12 min-h-[calc(100vh-92.24px-148.94px)]'>
       <h1 className='w-full text-center pb-8 text-4xl font-semibold'>Found recipes in {category}</h1>
       {isLoading && <img className='w-40 h-40 self-center' src={"https://media.tenor.com/wpSo-8CrXqUAAAAi/loading-loading-forever.gif"} alt='loading gif' width={300} height={300}/>}
-      {!isLoading && <div className='flex flex-col gap-8 w-full'>{finalContent}</div>}
+      {err && <div className='flex gap-4 p-6 bg-white shadow-md w-full'>
+        <div className='flex flex-col gap-3 w-full items-center text-center py-4'>
+          <span className='text-5xl'>&#9888;</span>
+          <h2 className='text-2xl font-semibold text-gray-800'>Oops! Something went wrong</h2>
+          <p className='text-lg text-gray-600 max-w-xl'>{err}</p>
+          <p className='text-md text-gray-400'>Try adjusting your ingredients or picking a different category.</p>
+        </div>
+      </div>}
+      {!isLoading && !err && <div className='flex flex-col gap-8 w-full'>{finalContent}</div>}
+      {!isLoading && <div className='flex justify-end w-full mt-8'>
+        <button onClick={() => router.push('/')} className='bg-main text-white rounded px-8 py-2 text-lg font-semibold'>Go Back</button>
+      </div>}
     </div>
   </main>
 )

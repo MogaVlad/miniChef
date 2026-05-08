@@ -31,7 +31,7 @@ export default function ResultElement({title, prepTime, ingredients, prepDetails
             <p className='text-xl font-semibold'>Ingredients: {`${ ingredients.map((el:any)=>{
                 return ` ${el}`
             })}`}</p>
-            <p className={`${openDivClasses.pClass} max-w-3xl font-semibold text-lg`}>{prepDetails}</p>
+            <p className={`${openDivClasses.pClass} max-w-3xl font-semibold text-lg whitespace-pre-line`}>{prepDetails}</p>
             <button onClick={handleClick} className={`${openDivClasses.buttonClasses} border-2 px-8 py-2 rounded self-end font-semibold`}>{openDivClasses.buttonContent}</button>
         </div>
     </div>

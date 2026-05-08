@@ -12,6 +12,10 @@ export default function Header() {
     setIng(e.target.value);
   }
   function handleClick(){
+    if(!ing.trim()){
+      alert('Please enter at least one ingredient.');
+      return;
+    }
     setIng('');
     setModalOpen(true);
     setIngredients(ing);
@@ -24,7 +28,7 @@ export default function Header() {
                 <h1 className='text-5xl text-white font-semibold'>A chef in every meal</h1>
                 <p className='text-2xl text-white max-w-md'>Use AI to create recipes from your input! And then choose a category you like.</p>
                 <div className='flex w-4/5 rounded'>
-                    <input onChange={handleChange} value={ing} placeholder='What ingredients do you have?' className='outline-none px-2 w-full border-2 border-main' type="text" />
+                    <input onChange={handleChange} value={ing} placeholder='What ingredients do you have?' className='outline-none px-2 w-full border-2 border-main text-black' type="text" />
                     <button onClick={handleClick} className='bg-main py-3 px-8 border border-main text-white font-semibold whitespace-nowrap'>Create recipes</button>
                 </div>
             </section>

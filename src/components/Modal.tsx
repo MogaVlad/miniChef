@@ -57,13 +57,17 @@ export default function Modal() {
                     <ModalElement src={vegetarian} func={handleClick} text="Vegetarian" val="vegetarian" selectedVal={selectedVal}/>
                     <ModalElement src={lunch} func={handleClick} text="Lunch" val="lunch" selectedVal={selectedVal}/>
                     </div>
+                    {selectedVal ? (
                     <Link href={{
                     pathname: "/results",
-                    query: { 
+                    query: {
                         ingredients: ingredients,
                         selectedCategory: selectedVal
                     }
                 }} className='mt-8 bg-main text-white rounded px-8 py-2 text-lg'>Create recipe</Link>
+                    ) : (
+                    <span className='mt-8 bg-gray-400 text-white rounded px-8 py-2 text-lg cursor-not-allowed'>Select a category first</span>
+                    )}
             </div>
         </div>
     </div>

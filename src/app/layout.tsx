@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'youChef',
-  description: 'youChef is an app that generates recipes based of AI',
+  description: 'youChef is an app that generates recipes based on AI',
 }
 
 export default function RootLayout({

@@ -12,7 +12,7 @@ export default function Footer() {
                 <Image src={logo} alt='logo image'></Image>
                 <section className='flex justify-between items-center gap-4 mr-32'>
                     <Link href='#'>About Us</Link>
-                    <Link href='../app/contact'>Contact</Link>
+                    <Link href='/contact'>Contact</Link>
                     <Link href='#'>FAQ</Link>
                     <Link href='#'>Legal disclosure</Link>
                     <Link href='#'>Privacy policy</Link>
