@@ -1,7 +1,13 @@
+'use client'
+
 import Image from 'next/image'
 import React, { useState } from 'react'
+import { useSavedRecipes } from '@/context/SavedRecipesContext'
 
 export default function ResultElement({title, prepTime, ingredients, prepDetails, category}:any) {
+
+    const { saveRecipe, isRecipeSaved } = useSavedRecipes()
+    const saved = isRecipeSaved(title, category)
 
     const [openDivClasses, setOpenDivClasses] = useState({
         pClass: 'hidden',
@@ -22,6 +28,17 @@ export default function ResultElement({title, prepTime, ingredients, prepDetails
         togglePrep();
     }
 
+    function handleSave(){
+        if (saved) return
+        saveRecipe({
+            name: title,
+            prepTime,
+            ingredients: Array.isArray(ingredients) ? ingredients : [],
+            prepDetails,
+            category,
+        })
+    }
+
   return (
     <div className={`flex gap-4 p-4 bg-white shadow-md ${openDivClasses.divClass}`}>
         <Image className='w-[200px] h-[200px] aspect-square object-cover' src={`/category_images/category_${category}.jpg`} alt='img recipe' width={300} height={300}/>
@@ -32,7 +49,20 @@ export default function ResultElement({title, prepTime, ingredients, prepDetails
                 return ` ${el}`
             })}`}</p>
             <p className={`${openDivClasses.pClass} max-w-3xl font-semibold text-lg whitespace-pre-line`}>{prepDetails}</p>
-            <button onClick={handleClick} className={`${openDivClasses.buttonClasses} border-2 px-8 py-2 rounded self-end font-semibold`}>{openDivClasses.buttonContent}</button>
+            <div className='flex gap-3 self-end'>
+                <button
+                    onClick={handleSave}
+                    disabled={saved}
+                    className={`border-2 px-8 py-2 rounded font-semibold transition-colors ${
+                        saved
+                            ? 'bg-gray-300 text-gray-500 border-gray-300 cursor-default'
+                            : 'bg-white text-main border-main hover:bg-main hover:text-white'
+                    }`}
+                >
+                    {saved ? 'Saved ✓' : 'Save Recipe'}
+                </button>
+                <button onClick={handleClick} className={`${openDivClasses.buttonClasses} border-2 px-8 py-2 rounded font-semibold`}>{openDivClasses.buttonContent}</button>
+            </div>
         </div>
     </div>
   )

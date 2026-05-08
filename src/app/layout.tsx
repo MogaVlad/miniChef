@@ -4,12 +4,13 @@ import { Inter } from 'next/font/google'
 
 import NavBar from '@/components/NavBar'
 import Footer from '@/components/Footer'
+import { SavedRecipesProvider } from '@/context/SavedRecipesContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'youChef',
-  description: 'youChef is an app that generates recipes based on AI',
+  title: 'miniChef',
+  description: 'miniChef is an app that generates recipes based on AI',
 }
 
 export default function RootLayout({
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NavBar/>
-        {children}
-        <Footer/>
+        <SavedRecipesProvider>
+          <NavBar/>
+          {children}
+          <Footer/>
+        </SavedRecipesProvider>
       </body>
     </html>
   )

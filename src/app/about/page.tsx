@@ -21,14 +21,14 @@ export default function AboutPage() {
         <div className='container mx-auto px-6 max-w-4xl'>
           <h2 className='text-3xl font-semibold mb-6 text-center'>Our Story</h2>
           <p className='text-lg leading-relaxed text-gray-700 mb-6'>
-            youChef was born from a simple idea: cooking should be accessible,
+            miniChef was born from a simple idea: cooking should be accessible,
             creative, and fun. Too often, people stare at a handful of ingredients
             and wonder what to make. We built an AI-powered recipe engine that
             turns whatever you have on hand into delicious, step-by-step meals.
           </p>
           <p className='text-lg leading-relaxed text-gray-700'>
             Whether you&apos;re a seasoned home cook or just getting started in the
-            kitchen, youChef helps you discover new flavors, reduce food waste,
+            kitchen, miniChef helps you discover new flavors, reduce food waste,
             and make every meal count.
           </p>
         </div>

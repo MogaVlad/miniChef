@@ -21,6 +21,7 @@ export default function NavBar() {
             <section className='justify-between flex gap-8 items-center'>
                 { pathname != '/' && ( <Link href='/' className='hover:text-main'> Home </Link> )}
                 <Link href='/community' className='hover:text-main'> Enter the Community </Link>
+                <Link href='/saved' className='hover:text-main'> My Recipes </Link>
                 <Link href='/help' className='hover:text-main'> Help & Support </Link>
                 <section className='flex gap-3 items-center'>
                     <Link href='https://www.facebook.com/'>

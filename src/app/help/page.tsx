@@ -4,14 +4,14 @@ import React, { useState } from 'react'
 
 const FAQ_ITEMS = [
   {
-    question: 'How does youChef generate recipes?',
+    question: 'How does miniChef generate recipes?',
     answer:
-      'youChef uses artificial intelligence to analyze the ingredients you provide and generate complete, step-by-step recipes. Simply type your available ingredients into the search bar on the home page and our AI will do the rest.',
+      'miniChef uses artificial intelligence to analyze the ingredients you provide and generate complete, step-by-step recipes. Simply type your available ingredients into the search bar on the home page and our AI will do the rest.',
   },
   {
-    question: 'Is youChef free to use?',
+    question: 'Is miniChef free to use?',
     answer:
-      'Yes! youChef is completely free. You can generate unlimited recipes, browse categories, and explore community submissions at no cost.',
+      'Yes! miniChef is completely free. You can generate unlimited recipes, browse categories, and explore community submissions at no cost.',
   },
   {
     question: 'Can I save my favorite recipes?',
@@ -138,7 +138,7 @@ export default function HelpPage() {
                 &#9993;
               </div>
               <h3 className='font-semibold'>Email</h3>
-              <p className='text-gray-600'>support@youchef.com</p>
+              <p className='text-gray-600'>support@minichef.com</p>
             </div>
             <div className='flex flex-col items-center gap-2'>
               <div className='w-16 h-16 rounded-full bg-main flex items-center justify-center text-white text-2xl'>
@@ -152,7 +152,7 @@ export default function HelpPage() {
                 &#9899;
               </div>
               <h3 className='font-semibold'>Social Media</h3>
-              <p className='text-gray-600'>@youchef on all platforms</p>
+              <p className='text-gray-600'>@minichef on all platforms</p>
             </div>
           </div>
         </div>

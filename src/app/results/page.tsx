@@ -1,7 +1,7 @@
 'use client'
- 
+
 import ResultElement from '@/components/ResultElement'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 export default function ResulsPage() {
@@ -9,9 +9,8 @@ export default function ResulsPage() {
     const [data, setData] = useState<any>({});
     const [isLoading, setIsLoading] = useState(false);
     const [err, setErr] = useState('')
-    const [finalContent, setFinalContent] = useState([])
+    const [finalContent, setFinalContent] = useState<any[]>([])
 
-    const router = useRouter()
     const searchParams = useSearchParams()
     const category = searchParams?.get('selectedCategory')
     const ingredients = searchParams?.get('ingredients')
@@ -66,12 +65,23 @@ async function fetchData(){
 
   },[data])
 
+  const displayCategory = category ? category.charAt(0).toUpperCase() + category.slice(1) : ''
+
 return (
   <main className='bg-gray-200 text-black'>
     <div className='container mx-auto flex flex-col items-center p-4 py-12 min-h-[calc(100vh-92.24px-148.94px)]'>
-      <h1 className='w-full text-center mb-8 pb-8 text-4xl font-semibold'>
-        {category ? category.charAt(0).toUpperCase() + category.slice(1) : ''} recipes for you
-      </h1>
+      <div className='w-full mb-10'>
+        <div className='bg-main rounded-lg py-8 px-6 text-center shadow-md'>
+          <h1 className='text-4xl font-semibold text-white'>
+            {displayCategory} Recipes For You
+          </h1>
+          {ingredients && (
+            <p className='text-white/80 mt-2 text-lg'>
+              Based on: {ingredients}
+            </p>
+          )}
+        </div>
+      </div>
       {isLoading && <img className='w-40 h-40 self-center' src={"https://media.tenor.com/wpSo-8CrXqUAAAAi/loading-loading-forever.gif"} alt='loading gif' width={300} height={300}/>}
       {err && <div className='flex gap-4 p-6 bg-white shadow-md w-full'>
         <div className='flex flex-col gap-3 w-full items-center text-center py-4'>
@@ -82,9 +92,6 @@ return (
         </div>
       </div>}
       {!isLoading && !err && <div className='flex flex-col gap-8 w-full'>{finalContent}</div>}
-      {!isLoading && <div className='flex justify-end w-full mt-8'>
-        <button onClick={() => router.push('/')} className='bg-main text-white rounded px-8 py-2 text-lg font-semibold'>Go Back</button>
-      </div>}
     </div>
   </main>
 )

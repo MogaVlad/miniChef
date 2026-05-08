@@ -16,7 +16,7 @@ export default function Footer() {
                     <Link href='/terms'  className='hover:text-main'>Terms & Privacy</Link>
                 </section>
             </section> 
-            <p className='text-center'> Copyright © youChef. All rights reserved</p>      
+            <p className='text-center'> Copyright © miniChef. All rights reserved</p>      
         </section>
     </footer>
   )

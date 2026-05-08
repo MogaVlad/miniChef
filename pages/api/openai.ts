@@ -29,7 +29,7 @@ Each step must include a realistic time estimate in parentheses. The sum of all 
 
 Return ONLY raw JSON, no markdown, no code blocks, no extra text.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemma-4-26b-a4b-it" });
     const result = await model.generateContent(prompt);
     let response = result.response.text()?.trim() || '[]';
 
