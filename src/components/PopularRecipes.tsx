@@ -14,36 +14,63 @@ const RECIPES = [
     title: 'French croissant',
     text: 'Buttery croissant with peach jam',
     prepTime: '5 hours 30 minutes',
-    ingredients: ['flour', 'butter', 'peach jam', 'milk', 'yeast'],
+    ingredients: [
+      '500g all-purpose flour', 
+      '350g unsalted cold butter (for lamination)', 
+      '150g peach jam', 
+      '250ml whole milk', 
+      '10g dry yeast', 
+      '1 tsp salt'
+    ],
     prepDetails:
-      "1. Combine flour, yeast, milk, and salt; knead into a rough dough (15 min).\n2. Wrap the dough and let it rest in the refrigerator (60 min).\n3. Beat cold butter into a flat square and enclose it within the rolled-out dough (15 min).\n4. Perform a 'turn' by rolling the dough into a rectangle and folding it in thirds; chill (45 min).\n5. Repeat the rolling and folding process two more times, chilling in between (90 min).\n6. Roll out the laminated dough, cut into triangles, and shape into croissants (20 min).\n7. Proof the croissants at room temperature until doubled in size (60 min).\n8. Bake at 200°C until golden brown and serve warm with peach jam (25 min).",
+      "1. Combine the flour, yeast, milk, and salt; knead into a rough dough (15 min).\n2. Wrap the dough and let it rest in the refrigerator (60 min).\n3. Beat the cold butter into a flat 15cm square and enclose it within the rolled-out dough (15 min).\n4. Perform a 'turn' by rolling the dough into a rectangle and folding it in thirds; chill (45 min).\n5. Repeat the rolling and folding process two more times, chilling in between (90 min).\n6. Roll out the laminated dough to 4mm thickness, cut into triangles, and shape into croissants (20 min).\n7. Proof the croissants at room temperature until doubled in size (60 min).\n8. Bake at 200°C until golden brown and serve warm with the peach jam (25 min).",
   },
   {
     src: popular_2,
     title: 'Creamy tomato soup',
     text: 'Creamy tomato soup',
     prepTime: '45 minutes',
-    ingredients: ['tomatoes', 'cream', 'basil', 'onion', 'garlic'],
+    ingredients: [
+      '1.2kg ripe vine tomatoes', 
+      '200ml heavy cream', 
+      '1/2 cup fresh basil leaves', 
+      '1 large yellow onion', 
+      '4 cloves garlic', 
+      '2 tbsp extra virgin olive oil'
+    ],
     prepDetails:
-      "1. Finely chop the onion and mince the garlic cloves (10 min).\n2. Heat olive oil in a pot and sauté onion and garlic until translucent (5 min).\n3. Roughly chop the tomatoes, add to the pot, and bring to a gentle simmer (20 min).\n4. Transfer the mixture to a blender and purée until completely smooth (5 min).\n5. Return to low heat, stir in the cream, and garnish with torn basil and cracked pepper (5 min).",
+      "1. Finely chop the onion and mince the garlic cloves (10 min).\n2. Heat the olive oil in a pot and sauté the onion and garlic until translucent (5 min).\n3. Roughly chop the tomatoes, add to the pot, and bring to a gentle simmer (20 min).\n4. Transfer the mixture to a high-speed blender and purée until completely smooth (5 min).\n5. Return to low heat, stir in the cream, and garnish with the torn basil leaves and cracked pepper (5 min).",
   },
   {
     src: popular_3,
     title: 'Grilled chicken & rice',
     text: 'Grilled chicken breast with rice and string peas',
     prepTime: '1 hour',
-    ingredients: ['chicken breast', 'rice', 'string peas', 'olive oil'],
+    ingredients: [
+      '2 large chicken breasts (approx. 500g)', 
+      '200g basmati rice', 
+      '250g fresh string peas', 
+      '4 tbsp extra virgin olive oil', 
+      '1 tsp smoked paprika'
+    ],
     prepDetails:
-      "1. Pat chicken dry, rub with olive oil, salt, and pepper, then let marinate (15 min).\n2. Rinse rice under cold water, then bring to a boil and simmer until tender (20 min).\n3. Trim the string peas and steam them until tender-crisp (10 min).\n4. Preheat grill and cook chicken breasts until internal temperature reaches 165°F (10 min).\n5. Let the chicken rest before slicing, then plate with rice, peas, and an olive oil drizzle (5 min).",
+      "1. Pat the chicken dry, rub with 2 tbsp olive oil, paprika, salt, and pepper, then let marinate (15 min).\n2. Rinse the rice under cold water until clear, then bring to a boil in 400ml water and simmer until tender (20 min).\n3. Trim the string peas and steam them until tender-crisp (10 min).\n4. Preheat grill and cook chicken breasts until internal temperature reaches 165°F (10 min).\n5. Let the chicken rest for 5 minutes before slicing, then plate with the rice, peas, and a drizzle of the remaining 2 tbsp olive oil (5 min).",
   },
   {
     src: popular_4,
     title: 'Raspberry vanilla cake',
     text: 'Raspberry jam and vanilla cream cake',
     prepTime: '1 hour 45 minutes',
-    ingredients: ['flour', 'eggs', 'raspberry jam', 'vanilla', 'cream'],
+    ingredients: [
+      '250g cake flour', 
+      '4 large eggs', 
+      '200g raspberry jam', 
+      '2 tsp vanilla extract', 
+      '300ml heavy whipping cream', 
+      '150g granulated sugar'
+    ],
     prepDetails:
-      "1. Preheat the oven to 180°C and grease your baking pans (10 min).\n2. In a large bowl, vigorously whip the eggs and sugar until pale and fluffy (15 min).\n3. Carefully fold the sifted flour and vanilla extract into the egg mixture (10 min).\n4. Pour the batter into pans and bake until a toothpick comes out clean (30 min).\n5. Allow the cakes to cool completely on wire racks (30 min).\n6. Whip the cream with vanilla, then assemble the layers with raspberry jam and the cream (10 min).",
+      "1. Preheat the oven to 180°C and grease two 20cm round baking pans (10 min).\n2. In a large bowl, vigorously whip the eggs and sugar until pale, tripled in volume, and fluffy (15 min).\n3. Carefully fold the sifted flour and 1 tsp vanilla extract into the egg mixture without deflating (10 min).\n4. Pour batter evenly into pans and bake until a toothpick comes out clean (30 min).\n5. Allow the cakes to cool completely on wire racks (30 min).\n6. Whip the cream with the remaining 1 tsp vanilla extract, then assemble the layers with the raspberry jam and the cream (10 min).",
   },
 ]
 
