@@ -6,19 +6,19 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
 export default function LoginPage() {
-  const { login, user } = useAuth()
+  const { login, user, loading } = useAuth()
   const router = useRouter()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  if (user) {
-    router.replace('/profile')
+  if (!loading && user) {
+    router.replace('/')
     return null
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
 
@@ -27,7 +27,7 @@ export default function LoginPage() {
       return
     }
 
-    const result = login(email.trim(), password)
+    const result = await login(email.trim(), password)
     if (result.success) {
       router.push('/')
     } else {

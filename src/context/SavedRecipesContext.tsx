@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { useAuth } from './AuthContext'
+import { getSupabase } from '@/lib/supabase'
 
 export interface SavedRecipe {
   id: string
@@ -20,52 +21,70 @@ interface SavedRecipesValue {
   isRecipeSaved: (name: string, category: string) => boolean
 }
 
-function storageKey(userId: string) {
-  return `minichef_saved_recipes_${userId}`
-}
-
 const SavedRecipesContext = createContext<SavedRecipesValue | null>(null)
 
 export function SavedRecipesProvider({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useAuth()
   const [recipes, setRecipes] = useState<SavedRecipe[]>([])
-  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     if (authLoading) return
     if (!user) {
       setRecipes([])
-      setLoaded(true)
       return
     }
-    try {
-      const stored = localStorage.getItem(storageKey(user.id))
-      setRecipes(stored ? JSON.parse(stored) : [])
-    } catch {
-      setRecipes([])
-    }
-    setLoaded(true)
+
+    getSupabase()
+      .from('saved_recipes')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('saved_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) {
+          setRecipes(data.map(r => ({
+            id: r.id,
+            name: r.name,
+            prepTime: r.prep_time,
+            ingredients: r.ingredients,
+            prepDetails: r.prep_details,
+            category: r.category,
+            savedAt: r.saved_at,
+          })))
+        }
+      })
   }, [user, authLoading])
 
-  useEffect(() => {
-    if (loaded && user) {
-      localStorage.setItem(storageKey(user.id), JSON.stringify(recipes))
+  const saveRecipe = useCallback(async (recipe: Omit<SavedRecipe, 'id' | 'savedAt'>) => {
+    if (!user) return
+
+    const { data, error } = await getSupabase()
+      .from('saved_recipes')
+      .insert({
+        user_id: user.id,
+        name: recipe.name,
+        prep_time: recipe.prepTime,
+        ingredients: recipe.ingredients,
+        prep_details: recipe.prepDetails,
+        category: recipe.category,
+      })
+      .select()
+      .single()
+
+    if (!error && data) {
+      setRecipes(prev => [{
+        id: data.id,
+        name: data.name,
+        prepTime: data.prep_time,
+        ingredients: data.ingredients,
+        prepDetails: data.prep_details,
+        category: data.category,
+        savedAt: data.saved_at,
+      }, ...prev])
     }
-  }, [recipes, loaded, user])
+  }, [user])
 
-  const saveRecipe = useCallback((recipe: Omit<SavedRecipe, 'id' | 'savedAt'>) => {
-    setRecipes(prev => {
-      const exists = prev.some(r => r.name === recipe.name && r.category === recipe.category)
-      if (exists) return prev
-      return [...prev, {
-        ...recipe,
-        id: crypto.randomUUID(),
-        savedAt: new Date().toISOString(),
-      }]
-    })
-  }, [])
-
-  const removeRecipe = useCallback((id: string) => {
+  const removeRecipe = useCallback(async (id: string) => {
+    await getSupabase().from('saved_recipes').delete().eq('id', id)
     setRecipes(prev => prev.filter(r => r.id !== id))
   }, [])
 

@@ -1,6 +1,8 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { getSupabase } from '@/lib/supabase'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
 
 export interface User {
   id: string
@@ -10,128 +12,130 @@ export interface User {
   createdAt: string
 }
 
-interface StoredUser extends User {
-  password: string
-}
-
 interface AuthValue {
   user: User | null
   loading: boolean
-  login: (email: string, password: string) => { success: boolean; error?: string }
-  register: (email: string, password: string, firstName: string, lastName: string) => { success: boolean; error?: string }
-  logout: () => void
-  updateProfile: (fields: Partial<Pick<User, 'firstName' | 'lastName'>>) => { success: boolean; error?: string }
-  changePassword: (currentPassword: string, newPassword: string) => { success: boolean; error?: string }
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  register: (email: string, password: string, firstName: string, lastName: string) => Promise<{ success: boolean; error?: string }>
+  logout: () => Promise<void>
+  updateProfile: (fields: Partial<Pick<User, 'firstName' | 'lastName'>>) => Promise<{ success: boolean; error?: string }>
+  changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>
 }
-
-const USERS_KEY = 'minichef_users'
-const SESSION_KEY = 'minichef_session'
 
 const AuthContext = createContext<AuthValue | null>(null)
 
-function getStoredUsers(): StoredUser[] {
-  try {
-    const raw = localStorage.getItem(USERS_KEY)
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
-  }
-}
+async function fetchProfile(supaUser: SupabaseUser): Promise<User | null> {
+  const { data } = await getSupabase()
+    .from('profiles')
+    .select('first_name, last_name, created_at')
+    .eq('id', supaUser.id)
+    .single()
 
-function setStoredUsers(users: StoredUser[]) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users))
+  if (!data) return null
+  return {
+    id: supaUser.id,
+    email: supaUser.email ?? '',
+    firstName: data.first_name,
+    lastName: data.last_name,
+    createdAt: data.created_at,
+  }
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const initializedRef = useRef(false)
 
   useEffect(() => {
-    try {
-      const sessionId = localStorage.getItem(SESSION_KEY)
-      if (sessionId) {
-        const users = getStoredUsers()
-        const found = users.find(u => u.id === sessionId)
-        if (found) {
-          const { password: _, ...safeUser } = found
-          setUser(safeUser)
-        }
+    if (initializedRef.current) return
+    initializedRef.current = true
+
+    getSupabase().auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        const profile = await fetchProfile(session.user)
+        setUser(profile)
       }
-    } catch {}
-    setLoading(false)
+      setLoading(false)
+    })
+
+    const { data: { subscription } } = getSupabase().auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setUser(null)
+        return
+      }
+      if (event === 'SIGNED_IN' && session?.user) {
+        const profile = await fetchProfile(session.user)
+        setUser(profile)
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  const login = useCallback((email: string, password: string) => {
-    const users = getStoredUsers()
-    const found = users.find(u => u.email.toLowerCase() === email.toLowerCase())
-    if (!found) return { success: false, error: 'No account found with this email.' }
-    if (found.password !== password) return { success: false, error: 'Incorrect password.' }
-
-    localStorage.setItem(SESSION_KEY, found.id)
-    const { password: _, ...safeUser } = found
-    setUser(safeUser)
+  const login = useCallback(async (email: string, password: string) => {
+    const { data, error } = await getSupabase().auth.signInWithPassword({ email, password })
+    if (error) return { success: false, error: error.message }
+    if (data.user) {
+      const profile = await fetchProfile(data.user)
+      setUser(profile)
+    }
     return { success: true }
   }, [])
 
-  const register = useCallback((email: string, password: string, firstName: string, lastName: string) => {
-    const users = getStoredUsers()
-    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-      return { success: false, error: 'An account with this email already exists.' }
-    }
-
-    const newUser: StoredUser = {
-      id: crypto.randomUUID(),
+  const register = useCallback(async (email: string, password: string, firstName: string, lastName: string) => {
+    const { data, error } = await getSupabase().auth.signUp({
       email,
-      firstName,
-      lastName,
       password,
-      createdAt: new Date().toISOString(),
+      options: { data: { first_name: firstName, last_name: lastName } },
+    })
+    if (error) return { success: false, error: error.message }
+    if (data.user && data.session) {
+      const profile = await fetchProfile(data.user)
+      setUser(profile)
     }
-
-    setStoredUsers([...users, newUser])
-    localStorage.setItem(SESSION_KEY, newUser.id)
-    const { password: _, ...safeUser } = newUser
-    setUser(safeUser)
     return { success: true }
   }, [])
 
-  const logout = useCallback(() => {
-    localStorage.removeItem(SESSION_KEY)
+  const logout = useCallback(async () => {
+    await getSupabase().auth.signOut()
     setUser(null)
   }, [])
 
-  const updateProfile = useCallback((fields: Partial<Pick<User, 'firstName' | 'lastName'>>) => {
-    const sessionId = localStorage.getItem(SESSION_KEY)
-    if (!sessionId) return { success: false, error: 'Not logged in.' }
+  const updateProfile = useCallback(async (fields: Partial<Pick<User, 'firstName' | 'lastName'>>) => {
+    if (!user) return { success: false, error: 'Not logged in.' }
 
-    const users = getStoredUsers()
-    const idx = users.findIndex(u => u.id === sessionId)
-    if (idx === -1) return { success: false, error: 'User not found.' }
+    const updates: Record<string, string> = {}
+    if (fields.firstName !== undefined) updates.first_name = fields.firstName
+    if (fields.lastName !== undefined) updates.last_name = fields.lastName
 
-    users[idx] = { ...users[idx], ...fields }
-    setStoredUsers(users)
+    const { error } = await getSupabase()
+      .from('profiles')
+      .update(updates)
+      .eq('id', user.id)
 
-    const { password: _, ...safeUser } = users[idx]
-    setUser(safeUser)
+    if (error) return { success: false, error: error.message }
+
+    setUser(prev => prev ? {
+      ...prev,
+      firstName: fields.firstName ?? prev.firstName,
+      lastName: fields.lastName ?? prev.lastName,
+    } : null)
     return { success: true }
-  }, [])
+  }, [user])
 
-  const changePassword = useCallback((currentPassword: string, newPassword: string) => {
-    const sessionId = localStorage.getItem(SESSION_KEY)
-    if (!sessionId) return { success: false, error: 'Not logged in.' }
+  const changePassword = useCallback(async (currentPassword: string, newPassword: string) => {
+    if (!user) return { success: false, error: 'Not logged in.' }
 
-    const users = getStoredUsers()
-    const idx = users.findIndex(u => u.id === sessionId)
-    if (idx === -1) return { success: false, error: 'User not found.' }
+    const { error: verifyError } = await getSupabase().auth.signInWithPassword({
+      email: user.email,
+      password: currentPassword,
+    })
+    if (verifyError) return { success: false, error: 'Current password is incorrect.' }
 
-    if (users[idx].password !== currentPassword) {
-      return { success: false, error: 'Current password is incorrect.' }
-    }
-
-    users[idx].password = newPassword
-    setStoredUsers(users)
+    const { error } = await getSupabase().auth.updateUser({ password: newPassword })
+    if (error) return { success: false, error: error.message }
     return { success: true }
-  }, [])
+  }, [user])
 
   return (
     <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile, changePassword }}>

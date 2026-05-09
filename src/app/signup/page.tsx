@@ -14,7 +14,7 @@ const passwordRules = [
 ]
 
 export default function SignUpPage() {
-  const { register, user } = useAuth()
+  const { register, user, loading } = useAuth()
   const router = useRouter()
 
   const [firstName, setFirstName] = useState('')
@@ -24,14 +24,14 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
 
-  if (user) {
-    router.replace('/profile')
+  if (!loading && user) {
+    router.replace('/')
     return null
   }
 
   const allRulesPass = passwordRules.every(r => r.test(password))
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
 
@@ -56,7 +56,7 @@ export default function SignUpPage() {
       return
     }
 
-    const result = register(email.trim(), password, firstName.trim(), lastName.trim())
+    const result = await register(email.trim(), password, firstName.trim(), lastName.trim())
     if (result.success) {
       router.push('/')
     } else {

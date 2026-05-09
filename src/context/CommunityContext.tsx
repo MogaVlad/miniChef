@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { getSupabase } from '@/lib/supabase'
 
 export interface CommunityRecipe {
   id: string
@@ -21,68 +22,93 @@ interface CommunityValue {
   deleteRecipe: (id: string, userId: string) => void
   toggleLike: (recipeId: string, userId: string) => void
   getByCategory: (category: string) => CommunityRecipe[]
+  reload: () => void
 }
-
-const STORAGE_KEY = 'minichef_community_recipes'
 
 const CommunityContext = createContext<CommunityValue | null>(null)
 
-function loadRecipes(): CommunityRecipe[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
+function mapRow(r: any): CommunityRecipe {
+  return {
+    id: r.id,
+    name: r.name,
+    prepTime: r.prep_time,
+    ingredients: r.ingredients,
+    prepDetails: r.prep_details,
+    category: r.category,
+    authorId: r.author_id,
+    authorName: r.author_name,
+    postedAt: r.posted_at,
+    likes: (r.community_likes ?? []).map((l: any) => l.user_id),
   }
-}
-
-function persistRecipes(recipes: CommunityRecipe[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes))
 }
 
 export function CommunityProvider({ children }: { children: React.ReactNode }) {
   const [recipes, setRecipes] = useState<CommunityRecipe[]>([])
-  const [loaded, setLoaded] = useState(false)
 
-  useEffect(() => {
-    setRecipes(loadRecipes())
-    setLoaded(true)
+  const loadRecipes = useCallback(async () => {
+    const { data } = await getSupabase()
+      .from('community_recipes')
+      .select('*, community_likes(user_id)')
+      .order('posted_at', { ascending: false })
+
+    if (data) setRecipes(data.map(mapRow))
   }, [])
 
   useEffect(() => {
-    if (loaded) persistRecipes(recipes)
-  }, [recipes, loaded])
+    loadRecipes()
+  }, [loadRecipes])
 
-  const postRecipe = useCallback((recipe: Omit<CommunityRecipe, 'id' | 'postedAt' | 'likes'>) => {
-    setRecipes(prev => [
-      {
-        ...recipe,
-        id: crypto.randomUUID(),
-        postedAt: new Date().toISOString(),
-        likes: [],
-      },
-      ...prev,
-    ])
+  const postRecipe = useCallback(async (recipe: Omit<CommunityRecipe, 'id' | 'postedAt' | 'likes'>) => {
+    const { data, error } = await getSupabase()
+      .from('community_recipes')
+      .insert({
+        author_id: recipe.authorId,
+        author_name: recipe.authorName,
+        name: recipe.name,
+        prep_time: recipe.prepTime,
+        ingredients: recipe.ingredients,
+        prep_details: recipe.prepDetails,
+        category: recipe.category,
+      })
+      .select('*, community_likes(user_id)')
+      .single()
+
+    if (!error && data) {
+      setRecipes(prev => [mapRow(data), ...prev])
+    }
   }, [])
 
-  const deleteRecipe = useCallback((id: string, userId: string) => {
-    setRecipes(prev => prev.filter(r => !(r.id === id && r.authorId === userId)))
+  const deleteRecipe = useCallback(async (id: string, _userId: string) => {
+    const { error } = await getSupabase().from('community_recipes').delete().eq('id', id)
+    if (!error) setRecipes(prev => prev.filter(r => r.id !== id))
   }, [])
 
-  const toggleLike = useCallback((recipeId: string, userId: string) => {
+  const toggleLike = useCallback(async (recipeId: string, userId: string) => {
+    const recipe = recipes.find(r => r.id === recipeId)
+    if (!recipe) return
+    const liked = recipe.likes.includes(userId)
+
+    if (liked) {
+      await getSupabase().from('community_likes').delete().eq('recipe_id', recipeId).eq('user_id', userId)
+    } else {
+      await getSupabase().from('community_likes').insert({ recipe_id: recipeId, user_id: userId })
+    }
+
     setRecipes(prev => prev.map(r => {
       if (r.id !== recipeId) return r
-      const liked = r.likes.includes(userId)
-      return { ...r, likes: liked ? r.likes.filter(id => id !== userId) : [...r.likes, userId] }
+      return {
+        ...r,
+        likes: liked ? r.likes.filter(id => id !== userId) : [...r.likes, userId],
+      }
     }))
-  }, [])
+  }, [recipes])
 
   const getByCategory = useCallback((category: string) => {
     return recipes.filter(r => r.category.toLowerCase() === category.toLowerCase())
   }, [recipes])
 
   return (
-    <CommunityContext.Provider value={{ recipes, postRecipe, deleteRecipe, toggleLike, getByCategory }}>
+    <CommunityContext.Provider value={{ recipes, postRecipe, deleteRecipe, toggleLike, getByCategory, reload: loadRecipes }}>
       {children}
     </CommunityContext.Provider>
   )

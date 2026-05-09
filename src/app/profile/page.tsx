@@ -57,14 +57,14 @@ export default function ProfilePage() {
     )
   }
 
-  function handleSaveName(e: React.FormEvent) {
+  async function handleSaveName(e: React.FormEvent) {
     e.preventDefault()
     setNameMsg({ text: '', ok: false })
     if (!firstName.trim() || !lastName.trim()) {
       setNameMsg({ text: 'Both fields are required.', ok: false })
       return
     }
-    const result = updateProfile({ firstName: firstName.trim(), lastName: lastName.trim() })
+    const result = await updateProfile({ firstName: firstName.trim(), lastName: lastName.trim() })
     if (result.success) {
       setNameMsg({ text: 'Name updated successfully.', ok: true })
       setEditingName(false)
@@ -82,7 +82,7 @@ export default function ProfilePage() {
 
   const allPwRulesPass = passwordRules.every(r => r.test(newPassword))
 
-  function handleChangePassword(e: React.FormEvent) {
+  async function handleChangePassword(e: React.FormEvent) {
     e.preventDefault()
     setPwMsg({ text: '', ok: false })
     if (!currentPassword) {
@@ -97,7 +97,7 @@ export default function ProfilePage() {
       setPwMsg({ text: 'New passwords do not match.', ok: false })
       return
     }
-    const result = changePassword(currentPassword, newPassword)
+    const result = await changePassword(currentPassword, newPassword)
     if (result.success) {
       setPwMsg({ text: 'Password changed successfully.', ok: true })
       setEditingPassword(false)
@@ -117,8 +117,8 @@ export default function ProfilePage() {
     setPwMsg({ text: '', ok: false })
   }
 
-  function handleLogout() {
-    logout()
+  async function handleLogout() {
+    await logout()
     router.push('/')
   }
 
