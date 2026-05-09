@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
+import { useAuth } from '@/context/AuthContext'
+import { useSavedRecipes } from '@/context/SavedRecipesContext'
 
 import popular_1 from '../assets/popular_recipes/popular_1.jpg'
 import popular_2 from '../assets/popular_recipes/popular_2.jpg'
@@ -13,6 +16,7 @@ const RECIPES = [
     src: popular_1,
     title: 'French croissant',
     text: 'Buttery croissant with peach jam',
+    category: 'breakfast',
     prepTime: '5 hours 30 minutes',
     ingredients: [
       '500g all-purpose flour', 
@@ -29,6 +33,7 @@ const RECIPES = [
     src: popular_2,
     title: 'Creamy tomato soup',
     text: 'Creamy tomato soup',
+    category: 'soups',
     prepTime: '45 minutes',
     ingredients: [
       '1.2kg ripe vine tomatoes', 
@@ -45,6 +50,7 @@ const RECIPES = [
     src: popular_3,
     title: 'Grilled chicken & rice',
     text: 'Grilled chicken breast with rice and string peas',
+    category: 'dinner',
     prepTime: '1 hour',
     ingredients: [
       '2 large chicken breasts (approx. 500g)', 
@@ -60,6 +66,7 @@ const RECIPES = [
     src: popular_4,
     title: 'Raspberry vanilla cake',
     text: 'Raspberry jam and vanilla cream cake',
+    category: 'desserts',
     prepTime: '1 hour 45 minutes',
     ingredients: [
       '250g cake flour', 
@@ -75,9 +82,23 @@ const RECIPES = [
 ]
 
 export default function PopularRecipes() {
+  const { user } = useAuth()
+  const { saveRecipe, isRecipeSaved } = useSavedRecipes()
   const [active, setActive] = useState(0)
   const [open, setOpen] = useState(false)
   const r = RECIPES[active]
+  const saved = isRecipeSaved(r.title, r.category)
+
+  function handleSave() {
+    if (!user || saved) return
+    saveRecipe({
+      name: r.title,
+      prepTime: r.prepTime,
+      ingredients: r.ingredients,
+      prepDetails: r.prepDetails,
+      category: r.category,
+    })
+  }
 
   const goto = (i: number) => {
     setActive(i)
@@ -126,12 +147,34 @@ export default function PopularRecipes() {
               ) : (
                 <p className='text-base text-gray-600'>{r.text}</p>
               )}
-              <button
-                onClick={() => setOpen((o) => !o)}
-                className={`border-2 px-8 py-2 rounded self-end font-semibold transition-colors ${btnClasses}`}
-              >
-                {open ? 'Close' : 'Preparation'}
-              </button>
+              <div className='flex gap-3 self-end items-center'>
+                {!user ? (
+                  <Link
+                    href='/login'
+                    className='border-2 px-8 py-2 rounded font-semibold text-main border-main hover:bg-main hover:text-white transition-colors'
+                  >
+                    Log in to Save
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handleSave}
+                    disabled={saved}
+                    className={`border-2 px-8 py-2 rounded font-semibold transition-colors ${
+                      saved
+                        ? 'bg-gray-300 text-gray-500 border-gray-300 cursor-default'
+                        : 'bg-white text-main border-main hover:bg-main hover:text-white'
+                    }`}
+                  >
+                    {saved ? 'Saved ✓' : 'Save Recipe'}
+                  </button>
+                )}
+                <button
+                  onClick={() => setOpen((o) => !o)}
+                  className={`border-2 px-8 py-2 rounded font-semibold transition-colors ${btnClasses}`}
+                >
+                  {open ? 'Close' : 'Preparation'}
+                </button>
+              </div>
             </div>
           </div>
 

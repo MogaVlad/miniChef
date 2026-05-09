@@ -1,12 +1,15 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import React, { useState } from 'react'
+import { useAuth } from '@/context/AuthContext'
 import { useSavedRecipes } from '@/context/SavedRecipesContext'
 import categoryImages from '@/assets/categoryImages'
 
 export default function ResultElement({title, prepTime, ingredients, prepDetails, category}:any) {
 
+    const { user } = useAuth()
     const { saveRecipe, isRecipeSaved } = useSavedRecipes()
     const saved = isRecipeSaved(title, category)
 
@@ -30,7 +33,7 @@ export default function ResultElement({title, prepTime, ingredients, prepDetails
     }
 
     function handleSave(){
-        if (saved) return
+        if (!user || saved) return
         saveRecipe({
             name: title,
             prepTime,
@@ -50,18 +53,27 @@ export default function ResultElement({title, prepTime, ingredients, prepDetails
                 return ` ${el}`
             })}`}</p>
             <p className={`${openDivClasses.pClass} max-w-3xl font-semibold text-lg whitespace-pre-line`}>{prepDetails}</p>
-            <div className='flex gap-3 self-end'>
-                <button
-                    onClick={handleSave}
-                    disabled={saved}
-                    className={`border-2 px-8 py-2 rounded font-semibold transition-colors ${
-                        saved
-                            ? 'bg-gray-300 text-gray-500 border-gray-300 cursor-default'
-                            : 'bg-white text-main border-main hover:bg-main hover:text-white'
-                    }`}
-                >
-                    {saved ? 'Saved ✓' : 'Save Recipe'}
-                </button>
+            <div className='flex gap-3 self-end items-center'>
+                {!user ? (
+                    <Link
+                        href='/login'
+                        className='border-2 px-8 py-2 rounded font-semibold text-main border-main hover:bg-main hover:text-white transition-colors'
+                    >
+                        Log in to Save
+                    </Link>
+                ) : (
+                    <button
+                        onClick={handleSave}
+                        disabled={saved}
+                        className={`border-2 px-8 py-2 rounded font-semibold transition-colors ${
+                            saved
+                                ? 'bg-gray-300 text-gray-500 border-gray-300 cursor-default'
+                                : 'bg-white text-main border-main hover:bg-main hover:text-white'
+                        }`}
+                    >
+                        {saved ? 'Saved ✓' : 'Save Recipe'}
+                    </button>
+                )}
                 <button onClick={handleClick} className={`${openDivClasses.buttonClasses} border-2 px-8 py-2 rounded font-semibold`}>{openDivClasses.buttonContent}</button>
             </div>
         </div>

@@ -50,7 +50,7 @@ Example output format:
 
 Return ONLY raw JSON, no markdown formatting (do not wrap in \`\`\`json), and no extra text.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemma-4-26b-a4b-it" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
     const result = await model.generateContent(prompt);
     let response = result.response.text()?.trim() || '[]';
 
@@ -61,6 +61,9 @@ Return ONLY raw JSON, no markdown formatting (do not wrap in \`\`\`json), and no
     return NextResponse.json({ text: response });
   } catch (error: any) {
     console.error('API error:', error.message || error);
-    return NextResponse.json({ text: JSON.stringify([{ name: 'Error', duration: 'N/A', ingredients: ['N/A'], preparation: error.message || 'Unknown error' }]) });
+    return NextResponse.json(
+      { error: "We couldn't generate recipes right now. Please try again later." },
+      { status: 500 }
+    );
   }
 }

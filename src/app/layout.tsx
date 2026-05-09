@@ -4,7 +4,9 @@ import { Inter } from 'next/font/google'
 
 import NavBar from '@/components/NavBar'
 import Footer from '@/components/Footer'
+import { AuthProvider } from '@/context/AuthContext'
 import { SavedRecipesProvider } from '@/context/SavedRecipesContext'
+import { CommunityProvider } from '@/context/CommunityContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,11 +23,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SavedRecipesProvider>
-          <NavBar/>
-          {children}
-          <Footer/>
-        </SavedRecipesProvider>
+        <AuthProvider>
+          <SavedRecipesProvider>
+            <CommunityProvider>
+              <NavBar/>
+              {children}
+              <Footer/>
+            </CommunityProvider>
+          </SavedRecipesProvider>
+        </AuthProvider>
       </body>
     </html>
   )

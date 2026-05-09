@@ -24,10 +24,13 @@ async function fetchData(){
                   'Content-Type': 'application/json'
               }
           });
-          if(!response.ok){
-              throw new Error(`Error! ${response.status}`)
-          }
           const result = await response.json();
+          if (result.error) {
+            throw new Error(result.error);
+          }
+          if(!response.ok){
+              throw new Error("We couldn't generate recipes right now. Please try again later.")
+          }
           setData(result);
       } catch (err:any){
           setErr(err.message);
@@ -88,7 +91,6 @@ return (
           <span className='text-5xl'>&#9888;</span>
           <h2 className='text-2xl font-semibold text-gray-800'>Oops! Something went wrong</h2>
           <p className='text-lg text-gray-600 max-w-xl'>{err}</p>
-          <p className='text-md text-gray-400'>Try adjusting your ingredients or picking a different category.</p>
         </div>
       </div>}
       {!isLoading && !err && <div className='flex flex-col gap-8 w-full'>{finalContent}</div>}

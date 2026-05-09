@@ -57,9 +57,9 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 export default function HelpPage() {
   return (
     <main className='min-h-screen'>
-      <section className='bg-main text-white py-20'>
+      <section className='bg-main text-white py-12'>
         <div className='container mx-auto px-6 text-center'>
-          <h1 className='text-5xl font-semibold mb-4'>Help & Support</h1>
+          <h1 className='text-4xl font-semibold mb-2'>Help & Support</h1>
           <p className='text-xl max-w-2xl mx-auto'>
             Have a question or need assistance? We&apos;re here to help.
           </p>

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { useAuth } from './AuthContext'
 
 export interface SavedRecipe {
   id: string
@@ -19,27 +20,38 @@ interface SavedRecipesValue {
   isRecipeSaved: (name: string, category: string) => boolean
 }
 
-const STORAGE_KEY = 'minichef_saved_recipes'
+function storageKey(userId: string) {
+  return `minichef_saved_recipes_${userId}`
+}
 
 const SavedRecipesContext = createContext<SavedRecipesValue | null>(null)
 
 export function SavedRecipesProvider({ children }: { children: React.ReactNode }) {
+  const { user, loading: authLoading } = useAuth()
   const [recipes, setRecipes] = useState<SavedRecipe[]>([])
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
+    if (authLoading) return
+    if (!user) {
+      setRecipes([])
+      setLoaded(true)
+      return
+    }
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) setRecipes(JSON.parse(stored))
-    } catch {}
+      const stored = localStorage.getItem(storageKey(user.id))
+      setRecipes(stored ? JSON.parse(stored) : [])
+    } catch {
+      setRecipes([])
+    }
     setLoaded(true)
-  }, [])
+  }, [user, authLoading])
 
   useEffect(() => {
-    if (loaded) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(recipes))
+    if (loaded && user) {
+      localStorage.setItem(storageKey(user.id), JSON.stringify(recipes))
     }
-  }, [recipes, loaded])
+  }, [recipes, loaded, user])
 
   const saveRecipe = useCallback((recipe: Omit<SavedRecipe, 'id' | 'savedAt'>) => {
     setRecipes(prev => {
