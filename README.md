@@ -4,17 +4,21 @@ A web application that generates recipes based on user-provided ingredients and 
 
 ## About
 
-This project was originally built in **August 2023** during a web development internship at **Cylex**. In **May 2025**, it was upgraded to bring it up to current standards, including migrating to the Gemini AI API, improving prompt engineering for better recipe validation, and refining the UI/UX. In **May 2026**, it was further expanded with authentication, a Supabase backend, a community recipe-sharing system, and account-based recipe saving.
+This project was originally built in **August 2023** during a web development internship at **Cylex**. In **May 2026**, it was upgraded to current standards — migrating to the Gemini AI API, improving prompt engineering for better recipe validation, refining the UI/UX, adding authentication (with a localStorage fallback for offline use), a Supabase backend, a community recipe-sharing system with content moderation, and account-based recipe saving.
 
 ## Features
 
 - **AI Recipe Generation** — Enter ingredients and a category to get complete, step-by-step recipes
-- **Authentication** — Sign up and log in with email/password, powered by Supabase Auth
+- **Authentication** — Sign up and log in with email/password (Supabase Auth), with a localStorage fallback when no `.env` is configured
 - **User Profiles** — View and edit profile details, change password with validation rules
-- **Save Recipes** — Save your favorite generated or popular recipes to a personal, account-based collection
-- **Community** — Share recipes with the community, browse by category, like and save other users' recipes
+- **Save Recipes** — Save your favorite generated or community recipes to a personal, account-based collection
+- **Community** — Share recipes with the community, browse by category, like, save, and report other users' recipes
+- **Content Moderation** — Blacklisted-term validation prevents inappropriate recipes from being posted
+- **Photo Attachment** — Authors of custom (non-AI) recipes can attach a photo URL
+- **AI Author Attribution** — AI-generated recipes shared to the community are credited as "miniChef AI - shared by [user]"
+- **Popular Recipes** — Home page carousel dynamically shows the top 4 most-liked community recipes
+- **Duplicate Prevention** — Identical recipes cannot be posted to the community twice
 - **Browse Categories** — Breakfast, Soups, Salads, Dinner, Desserts, Quick Meals, Lunchbox, and Vegetarian
-- **Popular Recipes** — Curated recipe carousel on the home page with save functionality
 - **Billing Section** — Profile page includes plan info and upgrade placeholder
 - **Responsive Pages** — About Us, Help & Support (FAQ + contact form), and Terms & Privacy
 
@@ -51,6 +55,7 @@ src/
 ├── components/                 # Reusable UI components
 ├── context/                    # React contexts (Auth, SavedRecipes, Community, Ingredients)
 └── lib/
+    ├── moderation.ts           # Blacklist-based content validation
     └── supabase.ts             # Supabase client initialization
 ```
 
@@ -61,21 +66,26 @@ src/
    ```bash
    npm install
    ```
-3. **Set up Supabase:**
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+> **Note:** The app works locally without a `.env` file — authentication falls back to localStorage, and the community uses seed data. AI recipe generation and Supabase persistence require the environment variables below.
+
+### Optional: Full Backend Setup
+
+1. **Set up Supabase:**
    - Create a free project at [supabase.com](https://supabase.com)
    - Go to **SQL Editor** and run the contents of `supabase-schema.sql`
    - Go to **Settings → API** and copy the **Project URL** and **anon/public key**
-4. Create a `.env` file in the root directory:
+2. Create a `.env` file in the root directory:
    ```
    GEMINI_KEY=your_gemini_api_key
    NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
    ```
-5. Run the development server:
-   ```bash
-   npm run dev
-   ```
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Database Schema
 
