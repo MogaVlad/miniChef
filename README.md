@@ -11,7 +11,7 @@ This project was originally built in **August 2023** during a web development in
 - **AI Recipe Generation** — Enter ingredients and a category to get complete, step-by-step recipes
 - **Authentication** — Sign up and log in with email/password (Supabase Auth), with a localStorage fallback when no `.env` is configured
 - **User Profiles** — View and edit profile details, change password with validation rules
-- **Save Recipes** — Save your favorite generated or community recipes to a personal, account-based collection
+- **Save Recipes** — Save your favorite generated or community recipes to a personal collection (Supabase-backed, with a localStorage fallback)
 - **Community** — Share recipes with the community, browse by category, like, save, and report other users' recipes
 - **Content Moderation** — Blacklisted-term validation prevents inappropriate recipes from being posted
 - **Photo Attachment** — Authors of custom (non-AI) recipes can attach a photo URL

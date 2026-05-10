@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { useAuth } from './AuthContext'
-import { getSupabase } from '@/lib/supabase'
+import { getSupabase, isSupabaseConfigured } from '@/lib/supabase'
 
 export interface SavedRecipe {
   id: string
@@ -24,7 +24,68 @@ interface SavedRecipesValue {
 
 const SavedRecipesContext = createContext<SavedRecipesValue | null>(null)
 
-export function SavedRecipesProvider({ children }: { children: React.ReactNode }) {
+const LOCAL_SAVED_KEY = 'saved_recipes'
+
+function getLocalRecipes(userId: string): SavedRecipe[] {
+  try {
+    const all = JSON.parse(localStorage.getItem(LOCAL_SAVED_KEY) || '{}')
+    return all[userId] || []
+  } catch { return [] }
+}
+
+function setLocalRecipes(userId: string, recipes: SavedRecipe[]) {
+  try {
+    const all = JSON.parse(localStorage.getItem(LOCAL_SAVED_KEY) || '{}')
+    all[userId] = recipes
+    localStorage.setItem(LOCAL_SAVED_KEY, JSON.stringify(all))
+  } catch {}
+}
+
+function LocalSavedRecipesProvider({ children }: { children: React.ReactNode }) {
+  const { user, loading: authLoading } = useAuth()
+  const [recipes, setRecipes] = useState<SavedRecipe[]>([])
+
+  useEffect(() => {
+    if (authLoading) return
+    if (!user) { setRecipes([]); return }
+    setRecipes(getLocalRecipes(user.id))
+  }, [user, authLoading])
+
+  const saveRecipe = useCallback((recipe: Omit<SavedRecipe, 'id' | 'savedAt'>) => {
+    if (!user) return
+    const newRecipe: SavedRecipe = {
+      ...recipe,
+      id: crypto.randomUUID(),
+      savedAt: new Date().toISOString(),
+    }
+    setRecipes(prev => {
+      const updated = [newRecipe, ...prev]
+      setLocalRecipes(user.id, updated)
+      return updated
+    })
+  }, [user])
+
+  const removeRecipe = useCallback((id: string) => {
+    if (!user) return
+    setRecipes(prev => {
+      const updated = prev.filter(r => r.id !== id)
+      setLocalRecipes(user.id, updated)
+      return updated
+    })
+  }, [user])
+
+  const isRecipeSaved = useCallback((name: string, category: string) => {
+    return recipes.some(r => r.name === name && r.category === category)
+  }, [recipes])
+
+  return (
+    <SavedRecipesContext.Provider value={{ recipes, saveRecipe, removeRecipe, isRecipeSaved }}>
+      {children}
+    </SavedRecipesContext.Provider>
+  )
+}
+
+function SupabaseSavedRecipesProvider({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useAuth()
   const [recipes, setRecipes] = useState<SavedRecipe[]>([])
 
@@ -101,6 +162,13 @@ export function SavedRecipesProvider({ children }: { children: React.ReactNode }
       {children}
     </SavedRecipesContext.Provider>
   )
+}
+
+export function SavedRecipesProvider({ children }: { children: React.ReactNode }) {
+  if (isSupabaseConfigured()) {
+    return <SupabaseSavedRecipesProvider>{children}</SupabaseSavedRecipesProvider>
+  }
+  return <LocalSavedRecipesProvider>{children}</LocalSavedRecipesProvider>
 }
 
 export function useSavedRecipes() {
