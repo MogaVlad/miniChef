@@ -110,3 +110,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [Google Generative AI SDK](https://github.com/google-gemini/generative-ai-js/blob/main/LICENSE) - Apache License 2.0
 - [Supabase JS](https://github.com/supabase/supabase-js/blob/master/LICENSE) - MIT License
 - Social media icons by [Flaticon](https://www.flaticon.com/)
+
+
+Copyright (c) 2023-2026 Moga Vlad-Mihai
