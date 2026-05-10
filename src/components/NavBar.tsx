@@ -31,7 +31,7 @@ export default function NavBar() {
     }, [pathname])
 
     return (
-        <nav className='bg-white w-full z-10 relative'>
+        <nav className='bg-white w-full z-50 relative'>
             <section className='flex justify-between mx-auto container items-center px-6 py-2'>
                 <Link href='/'><Image src={logo} alt='logo image' className='h-12 w-auto'/></Link>
 

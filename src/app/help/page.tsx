@@ -85,7 +85,7 @@ export default function HelpPage() {
             and we&apos;ll get back to you as soon as possible.
           </p>
           <form className='flex flex-col gap-6'>
-            <div className='flex gap-6'>
+            <div className='flex flex-col sm:flex-row gap-6'>
               <div className='flex-1'>
                 <label className='block text-sm font-medium mb-2'>Name</label>
                 <input
@@ -132,7 +132,7 @@ export default function HelpPage() {
       <section className='bg-white py-16'>
         <div className='container mx-auto px-6 max-w-3xl text-center'>
           <h2 className='text-3xl font-semibold mb-6'>Other Ways to Reach Us</h2>
-          <div className='flex gap-10 justify-center'>
+          <div className='flex flex-col sm:flex-row gap-8 sm:gap-10 justify-center items-center'>
             <div className='flex flex-col items-center gap-2'>
               <div className='w-16 h-16 rounded-full bg-main flex items-center justify-center text-white text-2xl'>
                 &#9993;

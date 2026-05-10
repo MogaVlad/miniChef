@@ -44,7 +44,7 @@ export default function AboutPage() {
   return (
     <main className='min-h-screen'>
       {/* Hero — compact with dot pattern */}
-      <section className='relative bg-main text-white py-12 overflow-hidden'>
+      <section className='relative bg-main text-white py-10 md:py-12 overflow-hidden'>
         <div
           className='absolute inset-0 opacity-10'
           style={{
@@ -52,9 +52,9 @@ export default function AboutPage() {
             backgroundSize: '20px 20px',
           }}
         />
-        <div className='container mx-auto px-6 text-center relative z-10'>
-          <h1 className='text-4xl font-semibold mb-2'>About Us</h1>
-          <p className='text-lg max-w-xl mx-auto opacity-90'>
+        <div className='container mx-auto px-6 text-center relative'>
+          <h1 className='text-3xl md:text-4xl font-semibold mb-2'>About Us</h1>
+          <p className='text-base md:text-lg max-w-xl mx-auto opacity-90'>
             We believe everyone deserves a great meal — no matter what&apos;s in the fridge.
           </p>
         </div>
@@ -114,13 +114,13 @@ export default function AboutPage() {
       </section>
 
       {/* What Makes Us Different */}
-      <section className='bg-white py-16'>
+      <section className='bg-white py-10 md:py-16'>
         <RevealSection>
           <div className='container mx-auto px-6'>
-            <h2 className='text-3xl font-semibold mb-10 text-center'>What Makes Us Different</h2>
-            <div className='flex gap-10 justify-center'>
+            <h2 className='text-2xl md:text-3xl font-semibold mb-8 md:mb-10 text-center'>What Makes Us Different</h2>
+            <div className='flex flex-col md:flex-row gap-8 md:gap-10 justify-center items-center'>
               <div className='flex flex-col items-center gap-4 max-w-[300px]'>
-                <Image src={about_1} alt='AI-powered recipes' className='w-[120px] h-[120px]' />
+                <Image src={about_1} alt='AI-powered recipes' className='w-[100px] h-[100px] md:w-[120px] md:h-[120px]' />
                 <h3 className='text-main font-semibold text-lg'>AI-Powered Recipes</h3>
                 <p className='text-center text-gray-600'>
                   Enter any combination of ingredients and our AI generates
@@ -128,7 +128,7 @@ export default function AboutPage() {
                 </p>
               </div>
               <div className='flex flex-col items-center gap-4 max-w-[300px]'>
-                <Image src={about_2} alt='Community driven' className='w-[120px] h-[120px]' />
+                <Image src={about_2} alt='Community driven' className='w-[100px] h-[100px] md:w-[120px] md:h-[120px]' />
                 <h3 className='text-main font-semibold text-lg'>Community Driven</h3>
                 <p className='text-center text-gray-600'>
                   Share your own recipes, review others&apos; creations, and be part
@@ -136,7 +136,7 @@ export default function AboutPage() {
                 </p>
               </div>
               <div className='flex flex-col items-center gap-4 max-w-[300px]'>
-                <Image src={about_3} alt='Curated categories' className='w-[120px] h-[120px]' />
+                <Image src={about_3} alt='Curated categories' className='w-[100px] h-[100px] md:w-[120px] md:h-[120px]' />
                 <h3 className='text-main font-semibold text-lg'>Curated Categories</h3>
                 <p className='text-center text-gray-600'>
                   Browse breakfast, soups, salads, desserts and more — each

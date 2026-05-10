@@ -314,7 +314,7 @@ export default function CommunityPage() {
   return (
     <main className='min-h-screen'>
       {/* Banner */}
-      <section className='relative bg-main text-white py-12 overflow-hidden'>
+      <section className='relative bg-main text-white py-10 md:py-12 overflow-hidden'>
         <div
           className='absolute inset-0 opacity-10'
           style={{
@@ -322,9 +322,9 @@ export default function CommunityPage() {
             backgroundSize: '20px 20px',
           }}
         />
-        <div className='container mx-auto px-6 text-center relative z-10'>
-          <h1 className='text-4xl font-semibold mb-2'>Enter the Community</h1>
-          <p className='text-lg max-w-xl mx-auto opacity-90'>
+        <div className='container mx-auto px-6 text-center relative'>
+          <h1 className='text-3xl md:text-4xl font-semibold mb-2'>Enter the Community</h1>
+          <p className='text-base md:text-lg max-w-xl mx-auto opacity-90'>
             Discover recipes shared by fellow food lovers, contribute your own, and explore by category.
           </p>
         </div>

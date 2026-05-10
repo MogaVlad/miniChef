@@ -54,7 +54,7 @@ export default function PopularRecipes() {
           <button
             onClick={prev}
             aria-label='previous'
-            className='w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 hover:border-main hover:text-main flex items-center justify-center text-2xl shrink-0'
+            className='hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 hover:border-main hover:text-main items-center justify-center text-2xl shrink-0'
           >
             &lsaquo;
           </button>
@@ -65,7 +65,7 @@ export default function PopularRecipes() {
                 <img
                   src={r.photoUrl}
                   alt={r.name}
-                  className='w-full h-[200px] md:w-[260px] md:h-[260px] object-cover rounded shrink-0'
+                  className='w-full h-[180px] sm:h-[200px] md:w-[260px] md:h-[260px] object-cover rounded shrink-0'
                 />
               ) : (
                 <Image
@@ -73,7 +73,7 @@ export default function PopularRecipes() {
                   alt={r.name}
                   width={300}
                   height={300}
-                  className='w-full h-[200px] md:w-[260px] md:h-[260px] object-cover rounded shrink-0'
+                  className='w-full h-[180px] sm:h-[200px] md:w-[260px] md:h-[260px] object-cover rounded shrink-0'
                 />
               )
             )}
@@ -85,7 +85,7 @@ export default function PopularRecipes() {
               <p className='text-sm md:text-lg'>
                 <span className='font-semibold'>Preparation time:</span> {r.prepTime}
               </p>
-              <p className='text-sm md:text-lg'>
+              <p className='text-sm md:text-lg line-clamp-2 md:line-clamp-none'>
                 <span className='font-semibold'>Ingredients:</span> {r.ingredients.join(', ')}
               </p>
               {open ? (
@@ -93,7 +93,7 @@ export default function PopularRecipes() {
                   {r.prepDetails}
                 </p>
               ) : (
-                <p className='text-sm md:text-base text-gray-600'>{r.ingredients.slice(0, 3).join(', ')}...</p>
+                <p className='text-sm md:text-base text-gray-600 hidden md:block'>{r.ingredients.slice(0, 3).join(', ')}...</p>
               )}
               <div className='flex flex-wrap gap-2 md:gap-3 self-end items-center mt-2'>
                 {!user ? (
@@ -129,7 +129,25 @@ export default function PopularRecipes() {
           <button
             onClick={next}
             aria-label='next'
-            className='w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 hover:border-main hover:text-main flex items-center justify-center text-2xl shrink-0'
+            className='hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 hover:border-main hover:text-main items-center justify-center text-2xl shrink-0'
+          >
+            &rsaquo;
+          </button>
+        </div>
+
+        {/* Mobile swipe arrows below card */}
+        <div className='flex sm:hidden justify-center gap-6 mt-4'>
+          <button
+            onClick={prev}
+            aria-label='previous'
+            className='w-10 h-10 rounded-full border border-gray-300 hover:border-main hover:text-main flex items-center justify-center text-2xl'
+          >
+            &lsaquo;
+          </button>
+          <button
+            onClick={next}
+            aria-label='next'
+            className='w-10 h-10 rounded-full border border-gray-300 hover:border-main hover:text-main flex items-center justify-center text-2xl'
           >
             &rsaquo;
           </button>
