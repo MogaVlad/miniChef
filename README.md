@@ -20,7 +20,7 @@ This project was originally built in **August 2023** during a web development in
 - **Duplicate Prevention** — Identical recipes cannot be posted to the community twice
 - **Browse Categories** — Breakfast, Soups, Salads, Dinner, Desserts, Quick Meals, Lunchbox, and Vegetarian
 - **Billing Section** — Profile page includes plan info and upgrade placeholder
-- **Responsive Pages** — About Us, Help & Support (FAQ + contact form), and Terms & Privacy
+- **Fully Responsive** — Mobile-first design with hamburger navigation, stacked layouts, and adaptive grids across all pages
 
 ## Tech Stack
 
