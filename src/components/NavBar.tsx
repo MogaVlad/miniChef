@@ -31,7 +31,7 @@ export default function NavBar() {
     return (
         <nav className='bg-white w-full z-10'>
             <section className='flex justify-between mx-auto container items-center px-6'>
-                <Image src={logo} alt='logo image' className='h-12 w-auto'/>
+                <Link href='/'><Image src={logo} alt='logo image' className='h-12 w-auto'/></Link>
                 <section className='justify-between flex gap-8 items-center'>
                     {pathname !== '/' && <Link href='/' className='hover:text-main'>Home</Link>}
                     <Link href='/community' className='hover:text-main'>Community</Link>

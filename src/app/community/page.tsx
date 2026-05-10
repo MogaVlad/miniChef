@@ -370,9 +370,9 @@ export default function CommunityPage() {
               return (
                 <button key={cat.key} onClick={() => setActiveCategory(isActive ? null : cat.key)}
                   className='group text-left'>
-                  <div className={`overflow-hidden rounded-lg shadow-md ring-2 transition-all ${isActive ? 'ring-main' : 'ring-transparent'}`}>
-                    <Image src={cat.src} alt={cat.name}
-                      className='w-full h-[180px] object-cover group-hover:scale-105 transition-transform duration-300' />
+                  <div className={`relative overflow-hidden rounded-lg shadow-md ring-2 transition-all aspect-[4/3] ${isActive ? 'ring-main' : 'ring-transparent'}`}>
+                    <Image src={cat.src} alt={cat.name} fill
+                      className='object-cover group-hover:scale-105 transition-transform duration-300' />
                   </div>
                   <h3 className={`text-center font-semibold mt-3 transition-colors ${isActive ? 'text-main' : 'group-hover:text-main'}`}>
                     {cat.name}
