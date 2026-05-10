@@ -41,12 +41,14 @@ function PostRecipeForm({ onClose }: { onClose: () => void }) {
 
   const [mode, setMode] = useState<'saved' | 'new'>('new')
   const [selectedSaved, setSelectedSaved] = useState('')
+  const [isSelectedGenerated, setIsSelectedGenerated] = useState(false)
 
   const [name, setName] = useState('')
   const [prepTime, setPrepTime] = useState('')
   const [ingredients, setIngredients] = useState('')
   const [prepDetails, setPrepDetails] = useState('')
   const [category, setCategory] = useState(CATEGORY_KEYS[0])
+  const [photoUrl, setPhotoUrl] = useState('')
   const [error, setError] = useState('')
 
   if (!user) return null
@@ -60,25 +62,35 @@ function PostRecipeForm({ onClose }: { onClose: () => void }) {
       setIngredients(r.ingredients.join(', '))
       setPrepDetails(r.prepDetails)
       setCategory(CATEGORY_KEYS.includes(r.category) ? r.category : CATEGORY_KEYS[0])
+      setIsSelectedGenerated(r.isGenerated ?? false)
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     if (!user || !name.trim() || !prepTime.trim() || !ingredients.trim() || !prepDetails.trim()) {
       setError('Please fill in all fields.')
       return
     }
-    postRecipe({
+    const isGenerated = mode === 'saved' && isSelectedGenerated
+    const authorName = isGenerated
+      ? `miniChef AI - shared by ${user.firstName} ${user.lastName}`
+      : `${user.firstName} ${user.lastName}`
+    const result = await postRecipe({
       name: name.trim(),
       prepTime: prepTime.trim(),
       ingredients: ingredients.split(',').map(s => s.trim()).filter(Boolean),
       prepDetails: prepDetails.trim(),
       category,
       authorId: user.id,
-      authorName: `${user.firstName} ${user.lastName}`,
+      authorName,
+      photoUrl: photoUrl.trim() || undefined,
     })
+    if (!result.success) {
+      setError(result.error || 'Failed to post recipe.')
+      return
+    }
     onClose()
   }
 
@@ -153,6 +165,13 @@ function PostRecipeForm({ onClose }: { onClose: () => void }) {
             <textarea value={prepDetails} onChange={e => setPrepDetails(e.target.value)} rows={5} placeholder='Write each step on a new line...'
               className='border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-main resize-none' />
           </div>
+          {!(mode === 'saved' && isSelectedGenerated) && (
+            <div className='flex flex-col gap-1'>
+              <label className='font-semibold text-xs text-gray-500'>Photo URL (optional)</label>
+              <input value={photoUrl} onChange={e => setPhotoUrl(e.target.value)} placeholder='https://example.com/my-recipe-photo.jpg'
+                className='border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-main' />
+            </div>
+          )}
 
           {error && <p className='text-red-500 text-sm'>{error}</p>}
 
@@ -167,14 +186,15 @@ function PostRecipeForm({ onClose }: { onClose: () => void }) {
 
 function CommunityCard({ recipe }: { recipe: CommunityRecipe }) {
   const { user } = useAuth()
-  const { toggleLike, deleteRecipe } = useCommunity()
+  const { toggleLike, deleteRecipe, reportRecipe } = useCommunity()
   const { saveRecipe, isRecipeSaved } = useSavedRecipes()
   const [open, setOpen] = useState(false)
+  const [reported, setReported] = useState(false)
 
   const liked = user ? recipe.likes.includes(user.id) : false
   const saved = isRecipeSaved(recipe.name, recipe.category)
   const isAuthor = user ? recipe.authorId === user.id : false
-  const imgSrc = categoryImages[recipe.category]
+  const imgSrc = recipe.photoUrl || categoryImages[recipe.category]
 
   function handleSave() {
     if (!user || saved) return
@@ -193,8 +213,13 @@ function CommunityCard({ recipe }: { recipe: CommunityRecipe }) {
   return (
     <div className={`flex gap-4 p-4 bg-white shadow-md rounded-lg ${cardBorder}`}>
       {imgSrc && (
-        <Image src={imgSrc} alt={recipe.name} width={300} height={300}
-          className='w-[180px] h-[180px] object-cover rounded shrink-0' />
+        recipe.photoUrl ? (
+          <img src={recipe.photoUrl} alt={recipe.name}
+            className='w-[180px] h-[180px] object-cover rounded shrink-0' />
+        ) : (
+          <Image src={imgSrc} alt={recipe.name} width={300} height={300}
+            className='w-[180px] h-[180px] object-cover rounded shrink-0' />
+        )
       )}
       <div className='flex flex-col gap-3 flex-1 min-w-0'>
         <div className='flex justify-between items-start gap-2'>
@@ -253,6 +278,23 @@ function CommunityCard({ recipe }: { recipe: CommunityRecipe }) {
               Delete
             </button>
           )}
+
+          {user && !isAuthor && recipe.authorId !== 'admin' && (
+            <button
+              onClick={() => {
+                const result = reportRecipe(recipe.id)
+                if (result.success) setReported(true)
+              }}
+              disabled={reported}
+              className={`text-sm font-semibold px-4 py-1.5 rounded border transition-colors ml-auto ${
+                reported
+                  ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-default'
+                  : 'border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white'
+              }`}
+            >
+              {reported ? 'Reported' : 'Report'}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -272,10 +314,17 @@ export default function CommunityPage() {
   return (
     <main className='min-h-screen'>
       {/* Banner */}
-      <section className='bg-main text-white py-12'>
-        <div className='container mx-auto px-6 text-center'>
+      <section className='relative bg-main text-white py-12 overflow-hidden'>
+        <div
+          className='absolute inset-0 opacity-10'
+          style={{
+            backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }}
+        />
+        <div className='container mx-auto px-6 text-center relative z-10'>
           <h1 className='text-4xl font-semibold mb-2'>Enter the Community</h1>
-          <p className='text-xl max-w-2xl mx-auto'>
+          <p className='text-lg max-w-xl mx-auto opacity-90'>
             Discover recipes shared by fellow food lovers, contribute your own, and explore by category.
           </p>
         </div>

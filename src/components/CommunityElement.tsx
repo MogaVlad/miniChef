@@ -3,10 +3,10 @@ import Image from 'next/image'
 
 export default function Recipe({src,title,text}:any) {
   return (
-    <div className='flex flex-col items-center gap-5'>
-    <Image src={src} alt="community_element" className='mb-3 w-[150px] h-[150px]'></Image> 
-        <h3 className='text-main'> {title} </h3>
-        <p className="text-center w-[375px]"> {text} </p>
+    <div className='flex flex-col items-center gap-4 max-w-[300px]'>
+      <Image src={src} alt="community_element" className='w-[120px] h-[120px]' />
+      <h3 className='text-main font-semibold text-lg'>{title}</h3>
+      <p className='text-center text-gray-600'>{text}</p>
     </div>
   )
 }

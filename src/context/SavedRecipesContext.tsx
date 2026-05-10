@@ -12,6 +12,7 @@ export interface SavedRecipe {
   prepDetails: string
   category: string
   savedAt: string
+  isGenerated?: boolean
 }
 
 interface SavedRecipesValue {
@@ -49,6 +50,7 @@ export function SavedRecipesProvider({ children }: { children: React.ReactNode }
             prepDetails: r.prep_details,
             category: r.category,
             savedAt: r.saved_at,
+            isGenerated: r.is_generated ?? false,
           })))
         }
       })
@@ -66,6 +68,7 @@ export function SavedRecipesProvider({ children }: { children: React.ReactNode }
         ingredients: recipe.ingredients,
         prep_details: recipe.prepDetails,
         category: recipe.category,
+        is_generated: recipe.isGenerated ?? false,
       })
       .select()
       .single()
@@ -79,6 +82,7 @@ export function SavedRecipesProvider({ children }: { children: React.ReactNode }
         prepDetails: data.prep_details,
         category: data.category,
         savedAt: data.saved_at,
+        isGenerated: data.is_generated ?? false,
       }, ...prev])
     }
   }, [user])

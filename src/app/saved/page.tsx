@@ -75,16 +75,19 @@ export default function SavedPage() {
   const { recipes, removeRecipe } = useSavedRecipes()
   const { recipes: communityRecipes, postRecipe } = useCommunity()
 
-  function handleShare(recipe: SavedRecipe) {
+  async function handleShare(recipe: SavedRecipe) {
     if (!user) return
-    postRecipe({
+    const authorName = recipe.isGenerated
+      ? `miniChef AI - shared by ${user.firstName} ${user.lastName}`
+      : `${user.firstName} ${user.lastName}`
+    await postRecipe({
       name: recipe.name,
       prepTime: recipe.prepTime,
       ingredients: recipe.ingredients,
       prepDetails: recipe.prepDetails,
       category: recipe.category,
       authorId: user.id,
-      authorName: `${user.firstName} ${user.lastName}`,
+      authorName,
     })
   }
 

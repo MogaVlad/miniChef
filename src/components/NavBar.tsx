@@ -34,9 +34,8 @@ export default function NavBar() {
                 <Image src={logo} alt='logo image' className='h-12 w-auto'/>
                 <section className='justify-between flex gap-8 items-center'>
                     {pathname !== '/' && <Link href='/' className='hover:text-main'>Home</Link>}
-                    <Link href='/community' className='hover:text-main'>Enter the Community</Link>
+                    <Link href='/community' className='hover:text-main'>Community</Link>
                     <Link href='/saved' className='hover:text-main'>My Recipes</Link>
-                    <Link href='/help' className='hover:text-main'>Help & Support</Link>
 
                     {user ? (
                         <div className='relative' ref={dropdownRef}>

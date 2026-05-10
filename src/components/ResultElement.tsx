@@ -40,6 +40,7 @@ export default function ResultElement({title, prepTime, ingredients, prepDetails
             ingredients: Array.isArray(ingredients) ? ingredients : [],
             prepDetails,
             category,
+            isGenerated: true,
         })
     }
 

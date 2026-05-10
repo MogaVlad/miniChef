@@ -5,94 +5,27 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
 import { useSavedRecipes } from '@/context/SavedRecipesContext'
-
-import popular_1 from '../assets/popular_recipes/popular_1.jpg'
-import popular_2 from '../assets/popular_recipes/popular_2.jpg'
-import popular_3 from '../assets/popular_recipes/popular_3.jpg'
-import popular_4 from '../assets/popular_recipes/popular_4.jpg'
-
-const RECIPES = [
-  {
-    src: popular_1,
-    title: 'French croissant',
-    text: 'Buttery croissant with peach jam',
-    category: 'breakfast',
-    prepTime: '5 hours 30 minutes',
-    ingredients: [
-      '500g all-purpose flour', 
-      '350g unsalted cold butter (for lamination)', 
-      '150g peach jam', 
-      '250ml whole milk', 
-      '10g dry yeast', 
-      '1 tsp salt'
-    ],
-    prepDetails:
-      "1. Combine the flour, yeast, milk, and salt; knead into a rough dough (15 min).\n2. Wrap the dough and let it rest in the refrigerator (60 min).\n3. Beat the cold butter into a flat 15cm square and enclose it within the rolled-out dough (15 min).\n4. Perform a 'turn' by rolling the dough into a rectangle and folding it in thirds; chill (45 min).\n5. Repeat the rolling and folding process two more times, chilling in between (90 min).\n6. Roll out the laminated dough to 4mm thickness, cut into triangles, and shape into croissants (20 min).\n7. Proof the croissants at room temperature until doubled in size (60 min).\n8. Bake at 200°C until golden brown and serve warm with the peach jam (25 min).",
-  },
-  {
-    src: popular_2,
-    title: 'Creamy tomato soup',
-    text: 'Creamy tomato soup',
-    category: 'soups',
-    prepTime: '45 minutes',
-    ingredients: [
-      '1.2kg ripe vine tomatoes', 
-      '200ml heavy cream', 
-      '1/2 cup fresh basil leaves', 
-      '1 large yellow onion', 
-      '4 cloves garlic', 
-      '2 tbsp extra virgin olive oil'
-    ],
-    prepDetails:
-      "1. Finely chop the onion and mince the garlic cloves (10 min).\n2. Heat the olive oil in a pot and sauté the onion and garlic until translucent (5 min).\n3. Roughly chop the tomatoes, add to the pot, and bring to a gentle simmer (20 min).\n4. Transfer the mixture to a high-speed blender and purée until completely smooth (5 min).\n5. Return to low heat, stir in the cream, and garnish with the torn basil leaves and cracked pepper (5 min).",
-  },
-  {
-    src: popular_3,
-    title: 'Grilled chicken & rice',
-    text: 'Grilled chicken breast with rice and string peas',
-    category: 'dinner',
-    prepTime: '1 hour',
-    ingredients: [
-      '2 large chicken breasts (approx. 500g)', 
-      '200g basmati rice', 
-      '250g fresh string peas', 
-      '4 tbsp extra virgin olive oil', 
-      '1 tsp smoked paprika'
-    ],
-    prepDetails:
-      "1. Pat the chicken dry, rub with 2 tbsp olive oil, paprika, salt, and pepper, then let marinate (15 min).\n2. Rinse the rice under cold water until clear, then bring to a boil in 400ml water and simmer until tender (20 min).\n3. Trim the string peas and steam them until tender-crisp (10 min).\n4. Preheat grill and cook chicken breasts until internal temperature reaches 165°F (10 min).\n5. Let the chicken rest for 5 minutes before slicing, then plate with the rice, peas, and a drizzle of the remaining 2 tbsp olive oil (5 min).",
-  },
-  {
-    src: popular_4,
-    title: 'Raspberry vanilla cake',
-    text: 'Raspberry jam and vanilla cream cake',
-    category: 'desserts',
-    prepTime: '1 hour 45 minutes',
-    ingredients: [
-      '250g cake flour', 
-      '4 large eggs', 
-      '200g raspberry jam', 
-      '2 tsp vanilla extract', 
-      '300ml heavy whipping cream', 
-      '150g granulated sugar'
-    ],
-    prepDetails:
-      "1. Preheat the oven to 180°C and grease two 20cm round baking pans (10 min).\n2. In a large bowl, vigorously whip the eggs and sugar until pale, tripled in volume, and fluffy (15 min).\n3. Carefully fold the sifted flour and 1 tsp vanilla extract into the egg mixture without deflating (10 min).\n4. Pour batter evenly into pans and bake until a toothpick comes out clean (30 min).\n5. Allow the cakes to cool completely on wire racks (30 min).\n6. Whip the cream with the remaining 1 tsp vanilla extract, then assemble the layers with the raspberry jam and the cream (10 min).",
-  },
-]
+import { useCommunity, CommunityRecipe } from '@/context/CommunityContext'
+import categoryImages from '@/assets/categoryImages'
 
 export default function PopularRecipes() {
   const { user } = useAuth()
   const { saveRecipe, isRecipeSaved } = useSavedRecipes()
+  const { getTopRecipes } = useCommunity()
   const [active, setActive] = useState(0)
   const [open, setOpen] = useState(false)
-  const r = RECIPES[active]
-  const saved = isRecipeSaved(r.title, r.category)
+
+  const topRecipes = getTopRecipes(4)
+  if (topRecipes.length === 0) return null
+
+  const r: CommunityRecipe = topRecipes[active] ?? topRecipes[0]
+  const saved = isRecipeSaved(r.name, r.category)
+  const imgSrc = r.photoUrl || categoryImages[r.category]
 
   function handleSave() {
     if (!user || saved) return
     saveRecipe({
-      name: r.title,
+      name: r.name,
       prepTime: r.prepTime,
       ingredients: r.ingredients,
       prepDetails: r.prepDetails,
@@ -104,8 +37,8 @@ export default function PopularRecipes() {
     setActive(i)
     setOpen(false)
   }
-  const prev = () => goto((active - 1 + RECIPES.length) % RECIPES.length)
-  const next = () => goto((active + 1) % RECIPES.length)
+  const prev = () => goto((active - 1 + topRecipes.length) % topRecipes.length)
+  const next = () => goto((active + 1) % topRecipes.length)
 
   const cardBorder = open ? 'border-2 border-main' : 'border border-gray-200'
   const btnClasses = open
@@ -127,13 +60,28 @@ export default function PopularRecipes() {
           </button>
 
           <div className={`flex-1 flex gap-6 p-5 bg-white shadow-md rounded mx-auto max-w-[900px] transition-colors ${cardBorder}`}>
-            <Image
-              src={r.src}
-              alt={r.title}
-              className='w-[260px] h-[260px] object-cover rounded shrink-0'
-            />
+            {imgSrc && (
+              r.photoUrl ? (
+                <img
+                  src={r.photoUrl}
+                  alt={r.name}
+                  className='w-[260px] h-[260px] object-cover rounded shrink-0'
+                />
+              ) : (
+                <Image
+                  src={imgSrc}
+                  alt={r.name}
+                  width={300}
+                  height={300}
+                  className='w-[260px] h-[260px] object-cover rounded shrink-0'
+                />
+              )
+            )}
             <div className='flex flex-col gap-3 flex-1 p-2'>
-              <h3 className='text-3xl font-semibold'>{r.title}</h3>
+              <h3 className='text-3xl font-semibold'>{r.name}</h3>
+              <p className='text-sm text-gray-500'>
+                by <span className='font-semibold text-gray-700'>{r.authorName}</span>
+              </p>
               <p className='text-lg'>
                 <span className='font-semibold'>Preparation time:</span> {r.prepTime}
               </p>
@@ -145,7 +93,7 @@ export default function PopularRecipes() {
                   {r.prepDetails}
                 </p>
               ) : (
-                <p className='text-base text-gray-600'>{r.text}</p>
+                <p className='text-base text-gray-600'>{r.ingredients.slice(0, 3).join(', ')}...</p>
               )}
               <div className='flex gap-3 self-end items-center'>
                 {!user ? (
@@ -188,7 +136,7 @@ export default function PopularRecipes() {
         </div>
 
         <div className='flex justify-center gap-2 mt-6'>
-          {RECIPES.map((_, i) => (
+          {topRecipes.map((_, i) => (
             <button
               key={i}
               onClick={() => goto(i)}
