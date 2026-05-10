@@ -211,19 +211,19 @@ function CommunityCard({ recipe }: { recipe: CommunityRecipe }) {
   const prepBtnClasses = open ? 'bg-white text-main border-main' : 'bg-main text-white border-white'
 
   return (
-    <div className={`flex gap-4 p-4 bg-white shadow-md rounded-lg ${cardBorder}`}>
+    <div className={`flex flex-col sm:flex-row gap-4 p-4 bg-white shadow-md rounded-lg ${cardBorder}`}>
       {imgSrc && (
         recipe.photoUrl ? (
           <img src={recipe.photoUrl} alt={recipe.name}
-            className='w-[180px] h-[180px] object-cover rounded shrink-0' />
+            className='w-full h-[200px] sm:w-[180px] sm:h-[180px] object-cover rounded shrink-0' />
         ) : (
           <Image src={imgSrc} alt={recipe.name} width={300} height={300}
-            className='w-[180px] h-[180px] object-cover rounded shrink-0' />
+            className='w-full h-[200px] sm:w-[180px] sm:h-[180px] object-cover rounded shrink-0' />
         )
       )}
       <div className='flex flex-col gap-3 flex-1 min-w-0'>
         <div className='flex justify-between items-start gap-2'>
-          <h3 className='text-2xl font-semibold'>{recipe.name}</h3>
+          <h3 className='text-xl sm:text-2xl font-semibold'>{recipe.name}</h3>
           <span className='text-xs text-gray-400 whitespace-nowrap shrink-0'>
             {new Date(recipe.postedAt).toLocaleDateString()}
           </span>
@@ -236,7 +236,7 @@ function CommunityCard({ recipe }: { recipe: CommunityRecipe }) {
         {open && (
           <p className='text-sm whitespace-pre-line'>{recipe.prepDetails}</p>
         )}
-        <div className='flex gap-3 items-center mt-auto flex-wrap'>
+        <div className='flex gap-2 sm:gap-3 items-center mt-auto flex-wrap'>
           <button
             onClick={() => user && toggleLike(recipe.id, user.id)}
             disabled={!user}
@@ -253,7 +253,7 @@ function CommunityCard({ recipe }: { recipe: CommunityRecipe }) {
 
           {user ? (
             <button onClick={handleSave} disabled={saved}
-              className={`text-sm font-semibold px-4 py-1.5 rounded border transition-colors ${
+              className={`text-sm font-semibold px-3 sm:px-4 py-1.5 rounded border transition-colors ${
                 saved
                   ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-default'
                   : 'border-main text-main hover:bg-main hover:text-white'
@@ -262,19 +262,19 @@ function CommunityCard({ recipe }: { recipe: CommunityRecipe }) {
               {saved ? 'Saved ✓' : 'Save'}
             </button>
           ) : (
-            <Link href='/login' className='text-sm font-semibold px-4 py-1.5 rounded border border-main text-main hover:bg-main hover:text-white transition-colors'>
+            <Link href='/login' className='text-sm font-semibold px-3 sm:px-4 py-1.5 rounded border border-main text-main hover:bg-main hover:text-white transition-colors'>
               Log in to Save
             </Link>
           )}
 
           <button onClick={() => setOpen(o => !o)}
-            className={`text-sm font-semibold px-4 py-1.5 rounded border-2 transition-colors ${prepBtnClasses}`}>
+            className={`text-sm font-semibold px-3 sm:px-4 py-1.5 rounded border-2 transition-colors ${prepBtnClasses}`}>
             {open ? 'Close' : 'Preparation'}
           </button>
 
           {isAuthor && (
             <button onClick={() => deleteRecipe(recipe.id, user!.id)}
-              className='text-sm font-semibold px-4 py-1.5 rounded border border-red-400 text-red-500 hover:bg-red-500 hover:text-white transition-colors ml-auto'>
+              className='text-sm font-semibold px-3 sm:px-4 py-1.5 rounded border border-red-400 text-red-500 hover:bg-red-500 hover:text-white transition-colors sm:ml-auto'>
               Delete
             </button>
           )}
@@ -286,7 +286,7 @@ function CommunityCard({ recipe }: { recipe: CommunityRecipe }) {
                 if (result.success) setReported(true)
               }}
               disabled={reported}
-              className={`text-sm font-semibold px-4 py-1.5 rounded border transition-colors ml-auto ${
+              className={`text-sm font-semibold px-3 sm:px-4 py-1.5 rounded border transition-colors sm:ml-auto ${
                 reported
                   ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-default'
                   : 'border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white'
@@ -331,26 +331,26 @@ export default function CommunityPage() {
       </section>
 
       {/* How it works */}
-      <section className='bg-white py-16'>
+      <section className='bg-white py-10 md:py-16'>
         <div className='container mx-auto px-6'>
-          <h2 className='text-3xl font-semibold mb-10 text-center'>How It Works</h2>
-          <div className='flex gap-10 justify-center'>
+          <h2 className='text-2xl md:text-3xl font-semibold mb-8 md:mb-10 text-center'>How It Works</h2>
+          <div className='flex flex-col md:flex-row gap-8 md:gap-10 justify-center items-center'>
             <div className='flex flex-col items-center gap-4 max-w-[300px]'>
-              <Image src={community_1} alt='Find recipes' className='w-[120px] h-[120px]' />
+              <Image src={community_1} alt='Find recipes' className='w-[100px] h-[100px] md:w-[120px] md:h-[120px]' />
               <h3 className='text-main font-semibold text-lg'>Find Recipes</h3>
               <p className='text-center text-gray-600'>
                 Explore the recipes selected by our staff and uploaded by our community members.
               </p>
             </div>
             <div className='flex flex-col items-center gap-4 max-w-[300px]'>
-              <Image src={community_2} alt='Review recipes' className='w-[120px] h-[120px]' />
+              <Image src={community_2} alt='Review recipes' className='w-[100px] h-[100px] md:w-[120px] md:h-[120px]' />
               <h3 className='text-main font-semibold text-lg'>Review Recipes</h3>
               <p className='text-center text-gray-600'>
                 Like and save the dishes proposed by others to help the community grow.
               </p>
             </div>
             <div className='flex flex-col items-center gap-4 max-w-[300px]'>
-              <Image src={community_3} alt='Add recipes' className='w-[120px] h-[120px]' />
+              <Image src={community_3} alt='Add recipes' className='w-[100px] h-[100px] md:w-[120px] md:h-[120px]' />
               <h3 className='text-main font-semibold text-lg'>Add Recipes</h3>
               <p className='text-center text-gray-600'>
                 Pass on your know-how by proposing your own recipes for everyone to enjoy.
@@ -361,10 +361,10 @@ export default function CommunityPage() {
       </section>
 
       {/* Category filter */}
-      <section className='bg-gray-100 py-16'>
+      <section className='bg-gray-100 py-10 md:py-16'>
         <div className='container mx-auto px-6'>
-          <h2 className='text-3xl font-semibold mb-10 text-center'>Browse by Category</h2>
-          <div className='grid grid-cols-4 gap-6 max-w-5xl mx-auto'>
+          <h2 className='text-2xl md:text-3xl font-semibold mb-8 md:mb-10 text-center'>Browse by Category</h2>
+          <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto'>
             {CATEGORIES.map((cat) => {
               const isActive = activeCategory === cat.key
               return (
@@ -392,10 +392,10 @@ export default function CommunityPage() {
       </section>
 
       {/* Community feed */}
-      <section className='bg-gray-200 py-16'>
-        <div className='container mx-auto px-6 max-w-4xl'>
-          <div className='flex justify-between items-center mb-8'>
-            <h2 className='text-3xl font-semibold'>
+      <section className='bg-gray-200 py-10 md:py-16'>
+        <div className='container mx-auto px-4 md:px-6 max-w-4xl'>
+          <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8'>
+            <h2 className='text-2xl md:text-3xl font-semibold'>
               {activeCategory
                 ? `${CATEGORIES.find(c => c.key === activeCategory)?.name} Recipes`
                 : 'Community Recipes'}

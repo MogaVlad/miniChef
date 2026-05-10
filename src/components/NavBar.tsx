@@ -12,6 +12,7 @@ export default function NavBar() {
     const pathname = usePathname()
     const { user } = useAuth()
     const [dropdownOpen, setDropdownOpen] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -26,13 +27,27 @@ export default function NavBar() {
 
     useEffect(() => {
         setDropdownOpen(false)
+        setMobileMenuOpen(false)
     }, [pathname])
 
     return (
-        <nav className='bg-white w-full z-10'>
-            <section className='flex justify-between mx-auto container items-center px-6'>
+        <nav className='bg-white w-full z-10 relative'>
+            <section className='flex justify-between mx-auto container items-center px-6 py-2'>
                 <Link href='/'><Image src={logo} alt='logo image' className='h-12 w-auto'/></Link>
-                <section className='justify-between flex gap-8 items-center'>
+
+                {/* Mobile hamburger */}
+                <button
+                    onClick={() => setMobileMenuOpen(prev => !prev)}
+                    className='md:hidden flex flex-col gap-1.5 p-2'
+                    aria-label='Toggle menu'
+                >
+                    <span className={`block w-6 h-0.5 bg-black transition-transform ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}/>
+                    <span className={`block w-6 h-0.5 bg-black transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`}/>
+                    <span className={`block w-6 h-0.5 bg-black transition-transform ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}/>
+                </button>
+
+                {/* Desktop nav */}
+                <section className='hidden md:flex justify-between gap-8 items-center'>
                     {pathname !== '/' && <Link href='/' className='hover:text-main'>Home</Link>}
                     <Link href='/community' className='hover:text-main'>Community</Link>
                     <Link href='/saved' className='hover:text-main'>My Recipes</Link>
@@ -81,6 +96,30 @@ export default function NavBar() {
                     )}
                 </section>
             </section>
+
+            {/* Mobile menu */}
+            {mobileMenuOpen && (
+                <section className='md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-100 z-50'>
+                    <div className='flex flex-col px-6 py-4 gap-4'>
+                        {pathname !== '/' && <Link href='/' className='hover:text-main py-2'>Home</Link>}
+                        <Link href='/community' className='hover:text-main py-2'>Community</Link>
+                        <Link href='/saved' className='hover:text-main py-2'>My Recipes</Link>
+                        {user ? (
+                            <>
+                                <Link href='/profile' className='hover:text-main py-2'>My Profile</Link>
+                                <SignOutButton />
+                            </>
+                        ) : (
+                            <Link
+                                href='/login'
+                                className='bg-main text-white font-semibold text-sm px-5 py-2 rounded hover:bg-orange-600 transition-colors text-center'
+                            >
+                                Log In
+                            </Link>
+                        )}
+                    </div>
+                </section>
+            )}
         </nav>
     )
 }

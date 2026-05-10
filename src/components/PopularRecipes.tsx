@@ -46,26 +46,26 @@ export default function PopularRecipes() {
     : 'bg-main text-white border-white'
 
   return (
-    <section className='bg-white w-full flex items-center justify-center min-h-[500px]'>
-      <div className='container mx-auto px-6 py-10'>
+    <section className='bg-white w-full flex items-center justify-center min-h-[400px] md:min-h-[500px]'>
+      <div className='container mx-auto px-4 md:px-6 py-10'>
         <h2 className='text-center text-2xl mb-8 font-semibold'>Popular recipes</h2>
 
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-2 md:gap-4'>
           <button
             onClick={prev}
             aria-label='previous'
-            className='w-12 h-12 rounded-full border border-gray-300 hover:border-main hover:text-main flex items-center justify-center text-2xl shrink-0'
+            className='w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 hover:border-main hover:text-main flex items-center justify-center text-2xl shrink-0'
           >
             &lsaquo;
           </button>
 
-          <div className={`flex-1 flex gap-6 p-5 bg-white shadow-md rounded mx-auto max-w-[900px] transition-colors ${cardBorder}`}>
+          <div className={`flex-1 flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-5 bg-white shadow-md rounded mx-auto max-w-[900px] transition-colors ${cardBorder}`}>
             {imgSrc && (
               r.photoUrl ? (
                 <img
                   src={r.photoUrl}
                   alt={r.name}
-                  className='w-[260px] h-[260px] object-cover rounded shrink-0'
+                  className='w-full h-[200px] md:w-[260px] md:h-[260px] object-cover rounded shrink-0'
                 />
               ) : (
                 <Image
@@ -73,33 +73,33 @@ export default function PopularRecipes() {
                   alt={r.name}
                   width={300}
                   height={300}
-                  className='w-[260px] h-[260px] object-cover rounded shrink-0'
+                  className='w-full h-[200px] md:w-[260px] md:h-[260px] object-cover rounded shrink-0'
                 />
               )
             )}
-            <div className='flex flex-col gap-3 flex-1 p-2'>
-              <h3 className='text-3xl font-semibold'>{r.name}</h3>
-              <p className='text-sm text-gray-500'>
+            <div className='flex flex-col gap-2 md:gap-3 flex-1 p-1 md:p-2'>
+              <h3 className='text-xl md:text-3xl font-semibold'>{r.name}</h3>
+              <p className='text-xs md:text-sm text-gray-500'>
                 by <span className='font-semibold text-gray-700'>{r.authorName}</span>
               </p>
-              <p className='text-lg'>
+              <p className='text-sm md:text-lg'>
                 <span className='font-semibold'>Preparation time:</span> {r.prepTime}
               </p>
-              <p className='text-lg'>
+              <p className='text-sm md:text-lg'>
                 <span className='font-semibold'>Ingredients:</span> {r.ingredients.join(', ')}
               </p>
               {open ? (
-                <p className='max-w-3xl font-semibold text-base whitespace-pre-line'>
+                <p className='max-w-3xl font-semibold text-sm md:text-base whitespace-pre-line'>
                   {r.prepDetails}
                 </p>
               ) : (
-                <p className='text-base text-gray-600'>{r.ingredients.slice(0, 3).join(', ')}...</p>
+                <p className='text-sm md:text-base text-gray-600'>{r.ingredients.slice(0, 3).join(', ')}...</p>
               )}
-              <div className='flex gap-3 self-end items-center'>
+              <div className='flex flex-wrap gap-2 md:gap-3 self-end items-center mt-2'>
                 {!user ? (
                   <Link
                     href='/login'
-                    className='border-2 px-8 py-2 rounded font-semibold text-main border-main hover:bg-main hover:text-white transition-colors'
+                    className='border-2 px-4 md:px-8 py-2 rounded font-semibold text-sm md:text-base text-main border-main hover:bg-main hover:text-white transition-colors'
                   >
                     Log in to Save
                   </Link>
@@ -107,7 +107,7 @@ export default function PopularRecipes() {
                   <button
                     onClick={handleSave}
                     disabled={saved}
-                    className={`border-2 px-8 py-2 rounded font-semibold transition-colors ${
+                    className={`border-2 px-4 md:px-8 py-2 rounded font-semibold text-sm md:text-base transition-colors ${
                       saved
                         ? 'bg-gray-300 text-gray-500 border-gray-300 cursor-default'
                         : 'bg-white text-main border-main hover:bg-main hover:text-white'
@@ -118,7 +118,7 @@ export default function PopularRecipes() {
                 )}
                 <button
                   onClick={() => setOpen((o) => !o)}
-                  className={`border-2 px-8 py-2 rounded font-semibold transition-colors ${btnClasses}`}
+                  className={`border-2 px-4 md:px-8 py-2 rounded font-semibold text-sm md:text-base transition-colors ${btnClasses}`}
                 >
                   {open ? 'Close' : 'Preparation'}
                 </button>
@@ -129,7 +129,7 @@ export default function PopularRecipes() {
           <button
             onClick={next}
             aria-label='next'
-            className='w-12 h-12 rounded-full border border-gray-300 hover:border-main hover:text-main flex items-center justify-center text-2xl shrink-0'
+            className='w-10 h-10 md:w-12 md:h-12 rounded-full border border-gray-300 hover:border-main hover:text-main flex items-center justify-center text-2xl shrink-0'
           >
             &rsaquo;
           </button>

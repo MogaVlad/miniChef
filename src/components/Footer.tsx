@@ -11,12 +11,14 @@ export default function Footer() {
   return (
     <footer className='w-full bg-white'>
         <section className='container mx-auto p-4 px-6'>
-            <section className='flex justify-between items-center'>
+            <section className='flex flex-col sm:flex-row justify-between items-center gap-4'>
                 <Link href='/'><Image src={logo} alt='logo image' className='h-12 w-auto'></Image></Link>
-                <section className='flex justify-between items-center gap-6'>
-                    <Link href='/about'  className='hover:text-main'>About Us</Link>
-                    <Link href='/help'   className='hover:text-main'>Help & Support</Link>
-                    <Link href='/terms'  className='hover:text-main'>Terms & Privacy</Link>
+                <section className='flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6'>
+                    <div className='flex flex-wrap justify-center gap-4 sm:gap-6'>
+                        <Link href='/about'  className='hover:text-main text-sm sm:text-base'>About Us</Link>
+                        <Link href='/help'   className='hover:text-main text-sm sm:text-base'>Help & Support</Link>
+                        <Link href='/terms'  className='hover:text-main text-sm sm:text-base'>Terms & Privacy</Link>
+                    </div>
                     <section className='flex gap-3 items-center'>
                         <Link href='https://www.facebook.com/'>
                             <Image className='w-8 h-8' src={facebook} alt='logo facebook'></Image>
@@ -29,8 +31,8 @@ export default function Footer() {
                         </Link>
                     </section>
                 </section>
-            </section> 
-            <p className='text-center'> Copyright © miniChef. All rights reserved</p>      
+            </section>
+            <p className='text-center text-sm mt-4'> Copyright © miniChef. All rights reserved</p>
         </section>
     </footer>
   )

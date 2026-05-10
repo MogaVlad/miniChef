@@ -132,24 +132,24 @@ export default function ProfilePage() {
     <main className='bg-gray-200 text-black min-h-[calc(100vh-92.24px-148.94px)]'>
       {/* Compact header */}
       <section className='bg-main text-white py-6'>
-        <div className='container mx-auto px-6 flex items-center gap-4'>
-          <div className='w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0'>
-            <span className='text-lg font-bold'>{user.firstName[0]}{user.lastName[0]}</span>
+        <div className='container mx-auto px-4 sm:px-6 flex items-center gap-3 sm:gap-4'>
+          <div className='w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0'>
+            <span className='text-base sm:text-lg font-bold'>{user.firstName[0]}{user.lastName[0]}</span>
           </div>
           <div className='flex-1 min-w-0'>
-            <h1 className='text-2xl font-semibold'>{user.firstName} {user.lastName}</h1>
-            <p className='text-white/70 text-sm truncate'>{user.email}</p>
+            <h1 className='text-xl sm:text-2xl font-semibold'>{user.firstName} {user.lastName}</h1>
+            <p className='text-white/70 text-xs sm:text-sm truncate'>{user.email}</p>
           </div>
           <button
             onClick={handleLogout}
-            className='text-sm text-white/80 hover:text-white border border-white/30 rounded-full px-4 py-1.5 hover:border-white transition-colors'
+            className='text-xs sm:text-sm text-white/80 hover:text-white border border-white/30 rounded-full px-3 sm:px-4 py-1.5 hover:border-white transition-colors'
           >
             Sign Out
           </button>
         </div>
       </section>
 
-      <div className='container mx-auto p-4 py-10 max-w-2xl flex flex-col gap-6'>
+      <div className='container mx-auto px-4 py-8 sm:py-10 max-w-2xl flex flex-col gap-6'>
         {/* Personal info */}
         <div className='bg-white shadow-md rounded-lg p-6'>
           <div className='flex justify-between items-center mb-5'>

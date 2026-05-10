@@ -42,11 +42,11 @@ export default function Modal() {
     return (
         <div className={`${modalClass} left-0 top-0 h-screen w-screen z-20`}>
             <div onClick={() => { setModalOpen(false) }} className='absolute left-0 top-0 w-screen h-screen bg-black opacity-40'></div>
-            <div className='bg-white relative mt-[5%] container mx-auto z-30 p-8'>
-                <p onClick={() => { setModalOpen(false) }} className='font-bold cursor-pointer absolute right-6 top-4'>X</p>
+            <div className='bg-white relative mt-[2%] sm:mt-[5%] mx-4 sm:container sm:mx-auto z-30 p-4 sm:p-8 max-h-[90vh] overflow-y-auto rounded-lg sm:rounded-none'>
+                <p onClick={() => { setModalOpen(false) }} className='font-bold cursor-pointer absolute right-4 sm:right-6 top-3 sm:top-4 text-lg'>X</p>
                 <div className='flex flex-col items-center'>
-                    <h1 className='text-4xl w-full text-center pb-8'>Select your category</h1>
-                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center'>
+                    <h1 className='text-2xl sm:text-4xl w-full text-center pb-6 sm:pb-8'>Select your category</h1>
+                    <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 justify-center'>
                     <ModalElement src={breakfast} func={handleClick} text="Breakfast" val="breakfast" selectedVal={selectedVal}/>
                     <ModalElement src={soups} func={handleClick} text="Soups" val="soups" selectedVal={selectedVal}/>
                     <ModalElement src={dinner} func={handleClick} text="Dinner" val="dinner" selectedVal={selectedVal}/>
@@ -63,9 +63,9 @@ export default function Modal() {
                         ingredients: ingredients,
                         selectedCategory: selectedVal
                     }
-                }} className='mt-8 bg-main text-white rounded px-8 py-2 text-lg'>Create recipe</Link>
+                }} className='mt-6 sm:mt-8 bg-main text-white rounded px-6 sm:px-8 py-2 text-base sm:text-lg'>Create recipe</Link>
                     ) : (
-                    <span className='mt-8 bg-gray-400 text-white rounded px-8 py-2 text-lg cursor-not-allowed'>Select a category first</span>
+                    <span className='mt-6 sm:mt-8 bg-gray-400 text-white rounded px-6 sm:px-8 py-2 text-base sm:text-lg cursor-not-allowed'>Select a category first</span>
                     )}
             </div>
         </div>

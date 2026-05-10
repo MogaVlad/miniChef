@@ -16,41 +16,41 @@ function SavedCard({ recipe, onRemove, onShare, shared }: { recipe: SavedRecipe;
     : 'bg-main text-white border-white'
 
   return (
-    <div className={`flex gap-4 p-4 bg-white shadow-md ${cardBorder}`}>
+    <div className={`flex flex-col sm:flex-row gap-4 p-4 bg-white shadow-md ${cardBorder}`}>
       <Image
-        className='w-[200px] h-[200px] aspect-square object-cover'
+        className='w-full h-[200px] sm:w-[200px] sm:h-[200px] object-cover'
         src={categoryImages[recipe.category]}
         alt={recipe.name}
         width={300}
         height={300}
       />
-      <div className='flex flex-col gap-4 w-full p-4'>
+      <div className='flex flex-col gap-3 sm:gap-4 w-full p-2 sm:p-4'>
         <div className='flex justify-between items-start'>
-          <h2 className='text-3xl font-semibold'>{recipe.name}</h2>
+          <h2 className='text-2xl sm:text-3xl font-semibold'>{recipe.name}</h2>
           <span className='text-sm text-gray-400 whitespace-nowrap'>
             {new Date(recipe.savedAt).toLocaleDateString()}
           </span>
         </div>
-        <p className='text-xl font-semibold'>Preparation time: {recipe.prepTime}</p>
-        <p className='text-xl font-semibold'>
+        <p className='text-base sm:text-xl font-semibold'>Preparation time: {recipe.prepTime}</p>
+        <p className='text-base sm:text-xl font-semibold'>
           Ingredients: {recipe.ingredients.map(el => ` ${el}`).join(',')}
         </p>
         {open && (
-          <p className='max-w-3xl font-semibold text-lg whitespace-pre-line'>
+          <p className='max-w-3xl font-semibold text-base sm:text-lg whitespace-pre-line'>
             {recipe.prepDetails}
           </p>
         )}
-        <div className='flex gap-3 self-end'>
+        <div className='flex flex-wrap gap-2 sm:gap-3 self-end'>
           <button
             onClick={onRemove}
-            className='border-2 px-8 py-2 rounded font-semibold text-red-500 border-red-500 hover:bg-red-500 hover:text-white transition-colors'
+            className='border-2 px-4 sm:px-8 py-2 rounded font-semibold text-sm sm:text-base text-red-500 border-red-500 hover:bg-red-500 hover:text-white transition-colors'
           >
             Remove
           </button>
           <button
             onClick={onShare}
             disabled={shared}
-            className={`border-2 px-8 py-2 rounded font-semibold transition-colors ${
+            className={`border-2 px-4 sm:px-8 py-2 rounded font-semibold text-sm sm:text-base transition-colors ${
               shared
                 ? 'bg-gray-300 text-gray-500 border-gray-300 cursor-default'
                 : 'border-green-500 text-green-600 hover:bg-green-500 hover:text-white'
@@ -60,7 +60,7 @@ function SavedCard({ recipe, onRemove, onShare, shared }: { recipe: SavedRecipe;
           </button>
           <button
             onClick={() => setOpen(o => !o)}
-            className={`${btnClasses} border-2 px-8 py-2 rounded font-semibold`}
+            className={`${btnClasses} border-2 px-4 sm:px-8 py-2 rounded font-semibold text-sm sm:text-base`}
           >
             {open ? 'Close' : 'Preparation'}
           </button>

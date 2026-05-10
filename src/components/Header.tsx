@@ -46,7 +46,7 @@ export default function Header() {
   const showPlaceholder = ing.length === 0;
 
   return (
-    <header className='relative h-[calc(100vh-92.25px)] overflow-hidden'>
+    <header className='relative h-[calc(100vh-60px)] md:h-[calc(100vh-92.25px)] overflow-hidden'>
       {/* Background photo */}
       <Image src={banner} alt='banner' fill className='object-cover' priority />
 
@@ -59,23 +59,23 @@ export default function Header() {
         }}
       />
 
-      <section className='relative h-full px-8 md:px-16'>
-        <section className='container mx-auto flex gap-6 flex-col justify-center h-full max-w-5xl'>
-          <h1 className='text-5xl md:text-6xl text-white font-semibold tracking-tight'>
+      <section className='relative h-full px-4 sm:px-8 md:px-16'>
+        <section className='container mx-auto flex gap-4 md:gap-6 flex-col justify-center h-full max-w-5xl'>
+          <h1 className='text-3xl sm:text-5xl md:text-6xl text-white font-semibold tracking-tight'>
             A chef in every meal
           </h1>
-          <p className='text-2xl text-white/90 max-w-md leading-relaxed'>
+          <p className='text-lg sm:text-2xl text-white/90 max-w-md leading-relaxed'>
             Use AI to create recipes from your input! And then choose a category you like.
           </p>
 
           {/* Search card */}
-          <div className='flex w-full md:w-4/5 max-w-2xl rounded-xl shadow-2xl overflow-hidden mt-2'>
+          <div className='flex flex-col sm:flex-row w-full md:w-4/5 max-w-2xl rounded-xl shadow-2xl overflow-hidden mt-2'>
             <div className='relative flex-1 bg-white'>
               <input
                 onChange={handleChange}
                 value={ing}
                 placeholder=''
-                className='outline-none px-5 py-4 w-full text-black text-base bg-transparent'
+                className='outline-none px-4 sm:px-5 py-3 sm:py-4 w-full text-black text-base bg-transparent'
                 type='text'
               />
               {showPlaceholder && (
@@ -90,7 +90,7 @@ export default function Header() {
             </div>
             <button
               onClick={handleClick}
-              className='bg-main hover:bg-[#d44e1e] transition-colors py-4 px-8 text-white font-semibold whitespace-nowrap'
+              className='bg-main hover:bg-[#d44e1e] transition-colors py-3 sm:py-4 px-6 sm:px-8 text-white font-semibold whitespace-nowrap'
             >
               Create recipes
             </button>
