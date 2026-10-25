@@ -50,7 +50,10 @@ Example output format:
 
 Return ONLY raw JSON, no markdown formatting (do not wrap in \`\`\`json), and no extra text.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-3.1-flash-lite",
+      generationConfig: { responseMimeType: "application/json" },
+    });
     const result = await model.generateContent(prompt);
     let response = result.response.text()?.trim() || '[]';
 
