@@ -26,7 +26,7 @@ const FAQ_ITEMS = [
   {
     question: 'What recipe categories are available?',
     answer:
-      'We offer a wide variety of categories including Breakfast, Soups, Salads, Dinner, Desserts, Quick Meals, Lunchbox, and Vegetarian options.',
+      'We offer a wide variety of categories including Breakfast, Soups, Salads, Dinner, Desserts, Quick & Easy, Lunch, and Vegetarian options.',
   },
   {
     question: 'Can I submit my own recipes?',

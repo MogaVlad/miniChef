@@ -17,8 +17,8 @@ import category_soups from '../../assets/category_images/category_soups.jpg'
 import category_salads from '../../assets/category_images/category_salads.jpg'
 import category_dinner from '../../assets/category_images/category_dinner.jpg'
 import category_desserts from '../../assets/category_images/category_desserts.jpg'
-import category_quick from '../../assets/category_images/category_quick.jpg'
-import category_lunchbox from '../../assets/category_images/category_lunchbox.jpg'
+import category_quick_and_easy from '../../assets/category_images/category_quick_and_easy.jpg'
+import category_lunch from '../../assets/category_images/category_lunch.jpg'
 import category_vegetarian from '../../assets/category_images/category_vegetarian.jpg'
 
 const CATEGORIES = [
@@ -27,8 +27,8 @@ const CATEGORIES = [
   { src: category_salads, name: 'Salads', key: 'salads' },
   { src: category_dinner, name: 'Dinner', key: 'dinner' },
   { src: category_desserts, name: 'Desserts', key: 'desserts' },
-  { src: category_quick, name: 'Quick Meals', key: 'quick' },
-  { src: category_lunchbox, name: 'Lunchbox', key: 'lunchbox' },
+  { src: category_quick_and_easy, name: 'Quick & Easy', key: 'quick_and_easy' },
+  { src: category_lunch, name: 'Lunch', key: 'lunch' },
   { src: category_vegetarian, name: 'Vegetarian', key: 'vegetarian' },
 ]
 

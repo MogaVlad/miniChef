@@ -8,9 +8,9 @@ import breakfast from '../assets/category_images/category_breakfast.jpg'
 import soups from '../assets/category_images/category_soups.jpg'
 import dinner from '../assets/category_images/category_dinner.jpg'
 import salads from '../assets/category_images/category_salads.jpg'
-import quick from '../assets/category_images/category_quick.jpg'
+import quick from '../assets/category_images/category_quick_and_easy.jpg'
 import vegetarian from '../assets/category_images/category_vegetarian.jpg'
-import lunch from '../assets/category_images/category_lunchbox.jpg'
+import lunch from '../assets/category_images/category_lunch.jpg'
 import desserts from '../assets/category_images/category_desserts.jpg'
 import Link from 'next/link';
 
