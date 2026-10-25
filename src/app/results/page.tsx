@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 export default function ResulsPage() {
 
     const [data, setData] = useState<any>({});
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [err, setErr] = useState('')
     const [finalContent, setFinalContent] = useState<any[]>([])
 
@@ -58,7 +58,8 @@ async function fetchData(){
 
         let arr = Array.isArray(parsed) ? parsed : [];
         for(let i = 0; i< arr.length; i++){
-          content.push(<ResultElement key={i} title={arr[i].name} prepTime={arr[i].duration} ingredients={arr[i].ingredients} prepDetails={arr[i].preparation} category={category}/>)
+          const r = arr[i]
+          content.push(<ResultElement key={i} title={r.title ?? r.name} prepTime={r.prepTime ?? r.duration} ingredients={r.ingredients} prepDetails={r.prepDetails ?? r.preparation} category={category}/>)
         }
         setFinalContent(content)
       } catch (e: any) {
@@ -68,7 +69,19 @@ async function fetchData(){
 
   },[data])
 
-  const displayCategory = category ? category.charAt(0).toUpperCase() + category.slice(1) : ''
+  const CATEGORY_LABELS: Record<string, string> = {
+    breakfast: 'Breakfast',
+    soups: 'Soups',
+    dinner: 'Dinner',
+    desserts: 'Desserts',
+    salads: 'Salads',
+    quick_and_easy: 'Quick & Easy',
+    vegetarian: 'Vegetarian',
+    lunch: 'Lunch',
+  }
+  const displayCategory = category
+    ? CATEGORY_LABELS[category] ?? category.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+    : ''
 
 return (
   <main className='bg-gray-200 text-black'>
@@ -85,7 +98,12 @@ return (
           )}
         </div>
       </div>
-      {isLoading && <img className='w-28 h-28 md:w-40 md:h-40 self-center' src={"https://media.tenor.com/wpSo-8CrXqUAAAAi/loading-loading-forever.gif"} alt='loading gif' width={300} height={300}/>}
+      {isLoading && (
+        <div className='flex flex-col items-center gap-4 py-12' role='status' aria-live='polite'>
+          <div className='w-14 h-14 md:w-16 md:h-16 border-4 border-gray-300 border-t-main rounded-full animate-spin' />
+          <p className='text-gray-600 text-base md:text-lg'>Cooking up your recipes… this can take up to 20 seconds.</p>
+        </div>
+      )}
       {err && <div className='flex gap-4 p-4 md:p-6 bg-white shadow-md w-full'>
         <div className='flex flex-col gap-3 w-full items-center text-center py-4'>
           <span className='text-4xl md:text-5xl'>&#9888;</span>

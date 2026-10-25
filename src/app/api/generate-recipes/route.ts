@@ -1,6 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 60;
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY!);
 
 // Gemini sometimes puts real line breaks/tabs inside JSON strings, which JSON.parse rejects.
@@ -76,11 +78,31 @@ Example output format:
 
 Return ONLY raw JSON, no markdown formatting (do not wrap in \`\`\`json), and no extra text.`;
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3.1-flash-lite",
-      generationConfig: { responseMimeType: "application/json" },
-    });
-    const result = await model.generateContent(prompt);
+    // Try each model in order; retry briefly when Google reports it is overloaded (503) or rate-limited (429).
+    const MODELS = ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite"];
+    let result: Awaited<ReturnType<ReturnType<typeof genAI.getGenerativeModel>["generateContent"]>> | null = null;
+    let lastError: any = null;
+
+    outer: for (const modelName of MODELS) {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: { responseMimeType: "application/json" },
+      });
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          result = await model.generateContent(prompt);
+          break outer;
+        } catch (err: any) {
+          lastError = err;
+          const msg = String(err?.message || err);
+          const temporary = msg.includes("503") || msg.includes("429");
+          if (!temporary) throw err;
+          await new Promise(r => setTimeout(r, 1500 * attempt));
+        }
+      }
+    }
+    if (!result) throw lastError;
+
     let response = result.response.text()?.trim() || '[]';
 
     response = response.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
