@@ -1,7 +1,7 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { getSupabase } from '@/lib/supabase'
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react'
+import { getSupabase, isSupabaseConfigured } from '@/lib/supabase'
 import { validateRecipeContent } from '@/lib/moderation'
 
 export interface CommunityRecipe {
@@ -98,7 +98,114 @@ function mapRow(r: any): CommunityRecipe {
   }
 }
 
-export function CommunityProvider({ children }: { children: React.ReactNode }) {
+
+type NewRecipe = Omit<CommunityRecipe, 'id' | 'postedAt' | 'likes'>
+
+// Shared checks used by both the Supabase and the local (demo) providers.
+function checkNewRecipe(existing: CommunityRecipe[], recipe: NewRecipe): { success: false; error: string } | null {
+  const validation = validateRecipeContent({
+    name: recipe.name,
+    ingredients: recipe.ingredients,
+    prepDetails: recipe.prepDetails,
+  })
+  if (!validation.valid) return { success: false, error: validation.error ?? 'Invalid recipe.' }
+
+  const isDuplicate = existing.some(r =>
+    r.name.toLowerCase() === recipe.name.toLowerCase() &&
+    r.ingredients.length === recipe.ingredients.length &&
+    r.ingredients.every((ing, i) => ing.toLowerCase() === recipe.ingredients[i]?.toLowerCase())
+  )
+  if (isDuplicate) return { success: false, error: 'This recipe already exists in the community.' }
+  return null
+}
+
+function checkReport(existing: CommunityRecipe[], recipeId: string): { success: boolean; error?: string } {
+  const recipe = existing.find(r => r.id === recipeId)
+  if (!recipe) return { success: false, error: 'Recipe not found.' }
+  if (recipe.authorId === 'admin') return { success: false, error: 'This recipe cannot be reported.' }
+  return { success: true }
+}
+
+// --- Local (demo) mode: used when Supabase isn't configured ---
+const LOCAL_COMMUNITY_KEY = 'community_recipes'
+const LOCAL_LIKES_KEY = 'community_likes'
+
+function readLocal<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? (JSON.parse(raw) as T) : fallback
+  } catch { return fallback }
+}
+
+function writeLocal(key: string, value: unknown) {
+  try { localStorage.setItem(key, JSON.stringify(value)) } catch {}
+}
+
+function LocalCommunityProvider({ children }: { children: React.ReactNode }) {
+  const [posted, setPosted] = useState<CommunityRecipe[]>([])
+  const [likes, setLikes] = useState<Record<string, string[]>>({})
+
+  const loadRecipes = useCallback(() => {
+    setPosted(readLocal<CommunityRecipe[]>(LOCAL_COMMUNITY_KEY, []))
+    setLikes(readLocal<Record<string, string[]>>(LOCAL_LIKES_KEY, {}))
+  }, [])
+
+  useEffect(() => { loadRecipes() }, [loadRecipes])
+
+  const recipes = useMemo(
+    () => [...posted, ...SEED_RECIPES].map(r => ({ ...r, likes: likes[r.id] ?? r.likes })),
+    [posted, likes]
+  )
+
+  const postRecipe = useCallback(async (recipe: NewRecipe): Promise<{ success: boolean; error?: string }> => {
+    const problem = checkNewRecipe(recipes, recipe)
+    if (problem) return problem
+
+    const newRecipe: CommunityRecipe = {
+      ...recipe,
+      id: crypto.randomUUID(),
+      postedAt: new Date().toISOString(),
+      likes: [],
+    }
+    const next = [newRecipe, ...posted]
+    setPosted(next)
+    writeLocal(LOCAL_COMMUNITY_KEY, next)
+    return { success: true }
+  }, [recipes, posted])
+
+  const deleteRecipe = useCallback((id: string, userId: string) => {
+    const next = posted.filter(r => !(r.id === id && r.authorId === userId))
+    setPosted(next)
+    writeLocal(LOCAL_COMMUNITY_KEY, next)
+  }, [posted])
+
+  const toggleLike = useCallback((recipeId: string, userId: string) => {
+    const current = recipes.find(r => r.id === recipeId)?.likes ?? []
+    const updated = current.includes(userId) ? current.filter(id => id !== userId) : [...current, userId]
+    const next = { ...likes, [recipeId]: updated }
+    setLikes(next)
+    writeLocal(LOCAL_LIKES_KEY, next)
+  }, [recipes, likes])
+
+  const reportRecipe = useCallback((recipeId: string) => checkReport(recipes, recipeId), [recipes])
+
+  const getByCategory = useCallback((category: string) => {
+    return recipes.filter(r => r.category.toLowerCase() === category.toLowerCase())
+  }, [recipes])
+
+  const getTopRecipes = useCallback((count: number) => {
+    return [...recipes].sort((a, b) => b.likes.length - a.likes.length).slice(0, count)
+  }, [recipes])
+
+  return (
+    <CommunityContext.Provider value={{ recipes, postRecipe, deleteRecipe, toggleLike, reportRecipe, getByCategory, getTopRecipes, reload: loadRecipes }}>
+      {children}
+    </CommunityContext.Provider>
+  )
+}
+
+// --- Supabase mode ---
+function SupabaseCommunityProvider({ children }: { children: React.ReactNode }) {
   const [recipes, setRecipes] = useState<CommunityRecipe[]>(SEED_RECIPES)
 
   const loadRecipes = useCallback(async () => {
@@ -119,20 +226,9 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
     loadRecipes()
   }, [loadRecipes])
 
-  const postRecipe = useCallback(async (recipe: Omit<CommunityRecipe, 'id' | 'postedAt' | 'likes'>): Promise<{ success: boolean; error?: string }> => {
-    const validation = validateRecipeContent({
-      name: recipe.name,
-      ingredients: recipe.ingredients,
-      prepDetails: recipe.prepDetails,
-    })
-    if (!validation.valid) return { success: false, error: validation.error }
-
-    const isDuplicate = recipes.some(r =>
-      r.name.toLowerCase() === recipe.name.toLowerCase() &&
-      r.ingredients.length === recipe.ingredients.length &&
-      r.ingredients.every((ing, i) => ing.toLowerCase() === recipe.ingredients[i]?.toLowerCase())
-    )
-    if (isDuplicate) return { success: false, error: 'This recipe already exists in the community.' }
+  const postRecipe = useCallback(async (recipe: NewRecipe): Promise<{ success: boolean; error?: string }> => {
+    const problem = checkNewRecipe(recipes, recipe)
+    if (problem) return problem
 
     const { data, error } = await getSupabase()
       .from('community_recipes')
@@ -182,12 +278,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
     }))
   }, [recipes])
 
-  const reportRecipe = useCallback((recipeId: string): { success: boolean; error?: string } => {
-    const recipe = recipes.find(r => r.id === recipeId)
-    if (!recipe) return { success: false, error: 'Recipe not found.' }
-    if (recipe.authorId === 'admin') return { success: false, error: 'This recipe cannot be reported.' }
-    return { success: true }
-  }, [recipes])
+  const reportRecipe = useCallback((recipeId: string) => checkReport(recipes, recipeId), [recipes])
 
   const getByCategory = useCallback((category: string) => {
     return recipes.filter(r => r.category.toLowerCase() === category.toLowerCase())
@@ -202,6 +293,13 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
       {children}
     </CommunityContext.Provider>
   )
+}
+
+export function CommunityProvider({ children }: { children: React.ReactNode }) {
+  if (isSupabaseConfigured()) {
+    return <SupabaseCommunityProvider>{children}</SupabaseCommunityProvider>
+  }
+  return <LocalCommunityProvider>{children}</LocalCommunityProvider>
 }
 
 export function useCommunity() {
