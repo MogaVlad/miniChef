@@ -3,6 +3,32 @@ import { NextRequest, NextResponse } from "next/server";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY!);
 
+// Gemini sometimes puts real line breaks/tabs inside JSON strings, which JSON.parse rejects.
+// This escapes control characters, but only inside string values.
+function escapeControlCharsInStrings(json: string): string {
+  let out = '';
+  let inString = false;
+  let escaped = false;
+  for (const ch of json) {
+    if (!inString) {
+      if (ch === '"') inString = true;
+      out += ch;
+      continue;
+    }
+    if (escaped) { out += ch; escaped = false; continue; }
+    if (ch === '\\') { out += ch; escaped = true; continue; }
+    if (ch === '"') { inString = false; out += ch; continue; }
+    const code = ch.charCodeAt(0);
+    if (code < 0x20) {
+      out += ch === '\n' ? '\\n' : ch === '\r' ? '\\r' : ch === '\t' ? '\\t'
+        : '\\u' + code.toString(16).padStart(4, '0');
+      continue;
+    }
+    out += ch;
+  }
+  return out;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -58,6 +84,7 @@ Return ONLY raw JSON, no markdown formatting (do not wrap in \`\`\`json), and no
     let response = result.response.text()?.trim() || '[]';
 
     response = response.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+    response = escapeControlCharsInStrings(response);
 
     JSON.parse(response);
 
